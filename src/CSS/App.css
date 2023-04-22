@@ -1,0 +1,240 @@
+*:focus {
+    outline: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #18181b;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #3d3d3f;
+    border-radius: 10px;
+}
+
+
+body{
+    font-family: 'Manrope', sans-serif;
+    --color: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(239,57,51,1) 50%)
+
+}
+.screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #fff9eb;
+}
+.formContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 620px;
+    height: 290px;
+    background-color: #fff9eb;
+    padding: 0 50px;
+    border-radius: 12px;
+    /* gap: 20px; */
+    z-index: 1;
+
+}
+.FormWrapper {
+
+    text-align: center;
+    /* padding: 20px 20px;*/
+    transition: 0.5s;
+    padding: 30px 0;
+}
+
+.logoWrapper {
+    transition: 0.5s;
+    padding-right: 20px;
+}
+
+.test, .test2 {
+    /*width: 610px;*/
+    width: 1px;
+    height: 250px;
+    position: absolute;
+    /* border: 1px solid var(--color) ;*/
+    background: var(--color);
+    z-index: -1;
+    margin-left: -80px;
+    transition: 0.5s;
+}
+
+.test2 {
+    height: 280px;
+}
+
+.FormWrapper:hover + .test, .FormWrapper:hover + .test2{
+    width: 600px;
+    transition: 0.5s;
+}
+
+.FormWrapper:hover {
+    color: white;
+}
+.FormWrapper:hover .input {
+    color: rgb(255, 255, 255);
+    border-color: white;
+    transition: 0.5s;
+}
+.FormWrapper:hover .input::placeholder {
+    color: rgba(255, 255, 255, 0.75);
+    border-color: white;
+    transition: 0.5s;
+}
+.FormWrapper:hover .button {
+    background-color: white;
+    font-weight: 600;
+    color: #ef3933;
+    transition: 0.7s;
+}
+
+
+.input {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: transparent;
+    border-bottom: solid 1px #8a8a8a;
+    margin: 5px 0;
+    color: #532031;
+    transition: 0.5s;
+}
+
+.input::placeholder {
+    font-size: 0.8rem;
+    transition: 0.5s;
+}
+
+.button {
+    width: 100%;
+    background-color: #ef3933;
+    border-radius: 6px;
+    padding: 5px 12px;
+    margin: 5px 0;
+    color: white;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.img {
+    width: 200px;
+    height: 50px;
+    background: url("../assets/katcha_logo.png") no-repeat;
+    background-size: contain;
+}
+span {
+    font-size: 0.9rem;
+}
+footer {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 9%;
+    background-color: #532031;
+    bottom: 0;
+    color: white;
+    text-decoration: none;
+}
+
+footer ul {
+    display: flex;
+    gap: 100px;
+    font-size: 0.9rem;
+}
+
+.link {
+    cursor: pointer;
+    text-decoration-line: underline;
+}
+
+.link:active ~~  {
+
+}
+
+.fade-exit {
+    opacity: 1;
+    max-width: 610px;
+}
+
+
+.fade-exit-active {
+    opacity: 0;
+    max-width: 0;
+    pointer-events: none;
+    transition: max-width 500ms;
+}
+
+.form {
+ margin: 0 20px;
+}
+.err-div {
+    position: absolute;
+    bottom: 270px;
+    width: 300px;
+    height: auto;
+    margin-left: 220px;
+    text-align: center;
+}
+.err-message {
+    color: #ef3933;
+    font-size: 0.8rem;
+    font-weight: 800;
+    transition: 0.5s;
+
+}
+
+.bounce {
+    outline: 0;
+    border-color: red;
+    animation-name: bounce;
+    animation-duration: .5s;
+    animation-delay: 0.25s;
+}
+
+/* This approximates the ease-in-out-bounce animation from easings.net, which would require a plug-in to use*/
+@keyframes bounce {
+    0% {
+        transform: translateX(-1px);
+        timing-function: ease-in;
+    }
+    37% {
+        transform: translateX(5px);
+        timing-function: ease-out;
+    }
+    55% {
+        transform: translateX(-5px);
+        timing-function: ease-in;
+    }
+    73% {
+        transform: translateX(4px);
+        timing-function: ease-out;
+    }
+    82% {
+        transform: translateX(-4px);
+        timing-function: ease-in;
+    }
+    91% {
+        transform: translateX(2px);
+        timing-function: ease-out;
+    }
+    96% {
+        transform: translateX(-2px);
+        timing-function: ease-in;
+    }
+    100% {
+        transform: translateX(0px);
+        timing-function: ease-in;
+    }
+}
