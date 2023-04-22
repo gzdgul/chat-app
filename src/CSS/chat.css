@@ -66,7 +66,7 @@
     font-weight: 700;
 }
 .chat-logo {
-    background: url("../assets/katcha_logo.png") no-repeat;
+    background: url("../../assets/katcha_logo.png") no-repeat;
     background-size: contain;
     width: 80px;
     height: 20px;
@@ -180,6 +180,7 @@
     align-items: stretch;
     padding-top: 5px;
     overflow-y: auto;
+    scroll-snap-align: start;
 }
 
 .chat-right {
