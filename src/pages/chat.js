@@ -1,25 +1,38 @@
 import React, {useEffect, useRef, useState} from 'react';
 import '../CSS/chat.css';
 import Connections from "../components/connections";
-import {getAllUserData, listenMessage, sendMessage, snapshotToArray} from "../firebase";
+import {
+    getAllUserData, getLatestMessages,
+    getUserData,
+    listenMessage,
+    sendMessage, setLatestMessages,
+    snapshotToArray,
+    updateUserConnections
+} from "../firebase";
 import Messages from "../components/messages";
 import {getAuth} from "firebase/auth";
 import useSelectUser from "../stores/useSelectUser";
+import useConnections from "../stores/useConnections";
+import useLatestMessage from "../stores/useLatestMessage";
+import latestMessages from "../components/latestMessages";
 
 function Chat(props) {
     const [currentMessage, setCurrentMessage] = useState('')
-    const [messageList, setMessageList] = useState([])
-    const [recieveMessageList, setRecieveMessageList] = useState([])
-    const [data, setData] = useState([])
-    const [connections, setConnections] = useState([])
-
+    const [connectionSearchInput, setConnectionSearchInput] = useState('')
+    const [allUserData, setAllUserData] = useState([])
+    const [filteredUserData, setFilteredUserData] = useState([])
+    const [searching, setSearching] = useState(false)
     const selectedUser = useSelectUser(state => state.user);
+    const connections_ = useConnections(state => state.connections_);
+    const setConnections = useConnections(state => state.setConnections);
+    const setLatestMessage = useLatestMessage(state => state.setMessage);
     const [chat, setChat] = useState([]);
     const chatDiv = useRef(null);
 
     useEffect(() => {
         getAllUserData().then((response) => {
-            setConnections(response.filter(x => x.userID !== getAuth().currentUser.uid));
+            setConnections(response.find(x => x.userID === getAuth().currentUser.uid).connections);
+            setAllUserData(response.filter(x => x.userID !== getAuth().currentUser.uid));
         });
     },[]);
 
@@ -34,25 +47,39 @@ function Chat(props) {
                     )
                 }
                 setChat(result);
+                console.log('chatTEST',chat)
+                // setNewestMessage([...chat].pop())
             });
         }
     }, [selectedUser])
 
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+
+    }
+
     useEffect(() => {
-        // chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
+        chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
     }, [chat])
 
-    // console.log('DATA',data)
-    // console.log('recieveMessageList',recieveMessageList)
 
-    // result.map((x) => setMessageList([...messageList, x.message])
 
     const handleMessageSubmit = (e) => {
         e.preventDefault();
         sendMessage(selectedUser.userID, currentMessage)
-        // setMessageList([...messageList, currentMessage])
+        //////////////////////////mesaj atıldığında bağlantı oluştur CROSS
+        if (!connections_.includes(selectedUser.userID)) {
+            updateUserConnections(getAuth().currentUser.uid, selectedUser.userID).then(()  => {
+                getUserData(getAuth().currentUser.uid).then((res) => {
+                    setConnections(res.connections);
+                })
+            })
+        }
+        if (!selectedUser.connections.includes(getAuth().currentUser.uid)) {
+            updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
+        }
         setCurrentMessage('')
-        // alert(currentMessage)
+        setLatestMessages(selectedUser.userID,currentMessage)
     }
     return (
         <div className={'screen screenChat'}>
@@ -68,14 +95,29 @@ function Chat(props) {
                    <div className={'connection-search'}>
                        <div className={'connection-search-bar'}>
                            <div className={'connection-search-icon'}><i className="fa fa-search"></i></div>
-                           <input className={'connection-search-input'} type="text" placeholder={'Aratın veya yeni bir sohbet başlatın'}/>
+                          <form onSubmit={handleSearchSubmit}>
+                              <input className={'connection-search-input'} type="text"
+                                     placeholder={'Aratın veya yeni bir sohbet başlatın'}
+                                     onChange={(e) => {
+                                         (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
+                                         setConnectionSearchInput(e.target.value)
+                                         setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value)))
+                                     } }
+                              />
+
+                          </form>
                        </div>
 
                    </div>
                    <div className={'connections'}>
-                       {
-                           connections.map((x) => {
-                               return <Connections key={'COMP_CONNECTION_' + x.userID} user={x} />
+                       { searching &&
+                           filteredUserData.map((x) => {
+                               return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID}  />
+                           })
+                       }
+                       { !searching &&
+                           connections_?.map((x) => {
+                               return <Connections key={'COMP_CONNECTION_' + x} userId={x}  />
                            })
                        }
 
@@ -85,7 +127,7 @@ function Chat(props) {
                    <div className={'header-chat-area'}>
                        <div className={'header-chat-user-index'}>
                            <div className={'friend-logo'}></div>
-                           <div className={'friend-name'}>{selectedUser?.email}</div>
+                           <div className={'friend-name'}>{selectedUser?.displayName}</div>
                        </div>
 
                        <div className={'chat-options'}>

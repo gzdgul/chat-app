@@ -1,8 +1,14 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
-import { doc, setDoc, getDoc, getFirestore, query, collection, getDocs } from "firebase/firestore";
-import { getDatabase, ref, push, onValue} from "firebase/database";
+import {initializeApp} from "firebase/app";
+import {
+    createUserWithEmailAndPassword,
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    updateProfile
+} from "firebase/auth";
+import {arrayUnion, collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc} from "firebase/firestore";
+import {getDatabase, onValue, push, ref} from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -33,6 +39,7 @@ export const getUserData = async (userID) => {
     }
 }
 
+
 export const getAllUserData = async () => {
     const ref = query(collection(db, "users"));
     const snap = await getDocs(ref);
@@ -49,11 +56,38 @@ export const setUserData = async (displayName, email) => {
     const { userdata } = await setDoc(doc(db, "users", auth.currentUser.uid), {
         userID: auth.currentUser.uid,
         displayName: displayName,
-        email: email
+        email: email,
+        connections: [],
     });
     return userdata;
 }
+export const setLatestMessages = async (recieverUID, latestMessage) => {
+    setDoc(doc(db, "users", recieverUID, "latestMessages", auth.currentUser.uid), {
+        message: latestMessage,
+        recieverID: auth.currentUser.uid
+    });
+    return await setDoc(doc(db, "users", auth.currentUser.uid, "latestMessages", recieverUID), {
+        message: latestMessage,
+        recieverID: recieverUID
+    });
 
+}
+
+export const getLatestMessages = async () => {
+    const messageDocRef = query(collection(db, "users", auth.currentUser.uid, "latestMessages"));
+    const messageDocSnap = await getDocs(messageDocRef);
+    if (!messageDocSnap.empty) {
+        return firestoreToArray(messageDocSnap);
+    } else {
+        return [];
+    }
+}
+export const updateUserConnections = async (senderID, recieverID) => {
+    const userRef = doc(db, "users", senderID);
+    return await updateDoc(userRef, {
+        connections: arrayUnion(recieverID)
+    });
+}
 
 export const updateDisplayName = async  (displayName) => {
     const { user } = await updateProfile(auth.currentUser, {
