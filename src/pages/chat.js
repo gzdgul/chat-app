@@ -133,7 +133,9 @@ function Chat(props) {
                <div className={'chat-area-container'}>
                    <div className={'header-chat-area'}>
                        <div className={'header-chat-user-index'}>
-                           <div className={'friend-logo'}><img src={selectedUser?.avatar} alt="avatar"/></div>
+                           {selectedUser &&
+                               <div className={'friend-logo'}><img src={selectedUser?.avatar} alt="avatar"/></div>
+                           }
                            <div className={'friend-name'}>{selectedUser?.displayName}</div>
                        </div>
 
