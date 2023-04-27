@@ -59,6 +59,12 @@
     background-color: #181818;
     border-radius: 50px;
     margin: 10px;
+    border: 0.15rem solid #1e1e1e;
+
+}
+
+.user-photo img {
+    border-radius: 50px;
 }
 .user-display-name {
     font-size: 1.1rem;
@@ -138,7 +144,12 @@
     background-color: #fff9eb;
     border-radius: 50px;
     margin-left: 15px;
+    border: 0.15rem solid #1e1e1e;
 
+}
+
+.friend-logo img {
+    border-radius: 50px;
 }
 .friend-name {
     display: flex;

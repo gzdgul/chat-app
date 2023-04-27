@@ -7,10 +7,19 @@
     border-bottom: 1px solid #343434;
     padding: 5px;
     cursor: pointer;
+    background-color: #18181b;
 }
 .connectionBanner:hover {
     background-color: #28282c;
 }
+
+.notification {
+
+    font-weight: 700;
+    color: #00ad67;
+
+}
+
 .connection-photo {
     width: 50px;
     min-width: 50px;
@@ -18,24 +27,45 @@
     margin: 10px;
     background-color: #d5d5d5;
     border-radius: 50px;
+    border: 0.15rem solid #1e1e1e;
+
+}
+.connection-photo img {
+    border-radius: 50px;
 }
 .connection-info {
-    width: 73%;
+    width: 54%;
     margin: 5px;
 }
 .connection-title {
-    font-weight: 700;
+    font-weight: 600;
+    font-size: 1.05rem;
 }
 
 .connection-index {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+}
 
+.notification-alert {
+    width: 15px;
+    height: 15px;
+    background-color: #00ad67;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #1e1e1e;
+    margin: 5px;
 }
 
 .connection-date {
-    width: 8%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 13%;
     min-width: 20px;
     height: 50px;
     margin: 5px 5px;
     font-size: 0.8rem;
+    text-align: center;
 }

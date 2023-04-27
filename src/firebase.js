@@ -64,11 +64,15 @@ export const setUserData = async (displayName, email) => {
 export const setLatestMessages = async (recieverUID, latestMessage) => {
     setDoc(doc(db, "users", recieverUID, "latestMessages", auth.currentUser.uid), {
         message: latestMessage,
-        recieverID: auth.currentUser.uid
+        recieverID: auth.currentUser.uid,
+        sender: 'reciever',
+        date : new Date().toISOString()
     });
     return await setDoc(doc(db, "users", auth.currentUser.uid, "latestMessages", recieverUID), {
         message: latestMessage,
-        recieverID: recieverUID
+        recieverID: recieverUID,
+        sender: 'me',
+        date : new Date().toISOString()
     });
 
 }
@@ -131,24 +135,7 @@ export const sendMessage = (recieverUserId, message) => {
     //     message: message
     // });
 }
-// export const setChatData = async (recieverUserId) => {
-//     const { chatData } = await setDoc(doc(db, "chats", auth.currentUser.uid, recieverUserId), {
-//         userID: auth.currentUser.uid,
-//         message: message
-//
-//     });
-//     return chatData;
-// }
 
-// export const listenMessage = () => {
-//     onValue(chatsDatabaseRef, (snapshot) => {
-//         const result = snapshotToArray(snapshot);
-//         if (result) {
-//             return result.filter(x => x.senderUserId === 'FcDB8kR5qnZXH7OOMvm0vIVzPmR2');
-//             // return result.filter(x => x.senderUserId === auth.currentUser.uid);
-//         }
-//     })
-// }
 export const listenMessage = (snapshotFunc) => {
     onValue(chatsDatabaseRef, snapshotFunc);
 };

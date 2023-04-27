@@ -9,7 +9,12 @@ const useConnections = create((set) => ({
     },
     addConnection: (x) => {
         set((state) => ({
-            connections_: [...state.connections_, x]
+            connections_: [x, ...state.connections_]
+        }))
+    },
+    sortConnections: (x) => {
+        set((state) => ({
+            connections_: [x, ...(state.connections_.filter(y => y !== x))]
         }))
     }
 }));

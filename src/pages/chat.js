@@ -14,24 +14,28 @@ import {getAuth} from "firebase/auth";
 import useSelectUser from "../stores/useSelectUser";
 import useConnections from "../stores/useConnections";
 import useLatestMessage from "../stores/useLatestMessage";
-import latestMessages from "../components/latestMessages";
+import reporter from "../stores/reporter";
 
 function Chat(props) {
     const [currentMessage, setCurrentMessage] = useState('')
     const [connectionSearchInput, setConnectionSearchInput] = useState('')
     const [allUserData, setAllUserData] = useState([])
+    const [currentUserData, setCurrentUserData] = useState([])
     const [filteredUserData, setFilteredUserData] = useState([])
     const [searching, setSearching] = useState(false)
     const selectedUser = useSelectUser(state => state.user);
     const connections_ = useConnections(state => state.connections_);
     const setConnections = useConnections(state => state.setConnections);
     const setLatestMessage = useLatestMessage(state => state.setMessage);
+    const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
+
     const [chat, setChat] = useState([]);
     const chatDiv = useRef(null);
 
     useEffect(() => {
         getAllUserData().then((response) => {
             setConnections(response.find(x => x.userID === getAuth().currentUser.uid).connections);
+            setCurrentUserData(response.find(x => x.userID === getAuth().currentUser.uid));
             setAllUserData(response.filter(x => x.userID !== getAuth().currentUser.uid));
         });
     },[]);
@@ -46,11 +50,15 @@ function Chat(props) {
                         (x.recieverUserId === getAuth().currentUser.uid && x.senderUserId === selectedUser.userID)
                     )
                 }
+                setReporterBird();
                 setChat(result);
                 console.log('chatTEST',chat)
-                // setNewestMessage([...chat].pop())
             });
         }
+        else {
+
+        }
+
     }, [selectedUser])
 
     const handleSearchSubmit = (e) => {
@@ -61,8 +69,6 @@ function Chat(props) {
     useEffect(() => {
         chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
     }, [chat])
-
-
 
     const handleMessageSubmit = (e) => {
         e.preventDefault();
@@ -80,6 +86,7 @@ function Chat(props) {
         }
         setCurrentMessage('')
         setLatestMessages(selectedUser.userID,currentMessage)
+        setReporterBird()
     }
     return (
         <div className={'screen screenChat'}>
@@ -87,7 +94,7 @@ function Chat(props) {
                <div className={'connections-container'}>
                    <div className={'header-connections'}>
                       <div className={'user-info'}>
-                          <div className={'user-photo'}></div>
+                          <div className={'user-photo'}><img src={currentUserData.avatar} alt="avatar"/></div>
                           <div className={'user-display-name'}>{getAuth().currentUser?.displayName}</div>
                       </div>
                        <div className={'chat-logo'}></div>
@@ -126,7 +133,7 @@ function Chat(props) {
                <div className={'chat-area-container'}>
                    <div className={'header-chat-area'}>
                        <div className={'header-chat-user-index'}>
-                           <div className={'friend-logo'}></div>
+                           <div className={'friend-logo'}><img src={selectedUser?.avatar} alt="avatar"/></div>
                            <div className={'friend-name'}>{selectedUser?.displayName}</div>
                        </div>
 
