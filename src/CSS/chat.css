@@ -189,11 +189,10 @@
     flex-direction: column;
     justify-content: start;
     align-items: stretch;
-    padding-top: 5px;
+    padding: 2% 5%;
     overflow-y: auto;
     overflow-x: hidden;
     scroll-snap-align: start;
-    margin: 0 5%;
 }
 
 .chat-start {
@@ -213,9 +212,12 @@
     width: 100%;
     display: flex;
     justify-content: start;
+    position: relative;
 }
 
 .chat-bubble {
+    display: flex;
+    flex-direction: row;
     max-width: 50%;
     padding: 10px;
     margin: 5px 10px;
@@ -243,7 +245,6 @@ svg {
 }
 
 .tail {
-    position: absolute;
 }
 
 .footer-chat-area {

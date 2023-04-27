@@ -12,8 +12,7 @@ function Messages({message, sender}) {
                                                    L 18,18
                                                    L 2,18
                                                    z"
-                              fill="#3d3d3d"
-                              stroke-width="1" />
+                              fill="#3d3d3d"/>
                     </svg>
             </div>
             }
