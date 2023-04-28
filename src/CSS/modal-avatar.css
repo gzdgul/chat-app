@@ -1,0 +1,21 @@
+.modal-avatar-collection {
+    display: flex;
+    flex-wrap: wrap;
+    width: 470px;
+    background-color: #e8e3d8;
+    padding: 10px;
+}
+
+.avatar-picture {
+    width: 70px;
+    height: 70px;
+    margin: 10px;
+}
+
+.avatar-picture img {
+    cursor: pointer;
+    border-radius: 10px;
+}
+/*.change-avatar:active .modal-avatar-collection {*/
+/*    */
+/*}*/

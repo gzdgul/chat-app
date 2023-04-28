@@ -5,7 +5,7 @@ import { getUserData } from "../firebase";
 import useConnections from "../stores/useConnections";
 import LatestMessages from "./latestMessages";
 
-function Connections({userId}) {
+function Connections({userId, userData}) {
     const [userDetail, setUserDetail] = useState(null);
     const [notification, setNotification] = useState(false);
     const [test, setTest] = useState('');
@@ -40,9 +40,12 @@ function Connections({userId}) {
     return (
         <div id={userDetail.userID} onClick={handleClick}>
             <div className={(!notification) ? 'connectionBanner' : 'connectionBanner notification'}>
-                <div className={'connection-photo'}><img src={userDetail.avatar} alt="avatar"/></div>
+                <div className={'connection-photo'}><img src={userDetail.avatarLink} alt="avatar"/></div>
                 <div className={'connection-info'}>
-                    <div className={'connection-title'}>{userDetail.displayName}</div>
+                    <div className={'connection-title'}>
+                        {userDetail.displayName}
+                        <span style={{color: '#ef3933'}}> {userData ? `(${userData.email})` : ''}</span>
+                    </div>
                     <div className={'connection-index'}>
                         {<LatestMessages UID = {userDetail.userID} place = {'index'} createNotification = {createNotification}/>}</div>
                 </div>

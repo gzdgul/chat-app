@@ -71,7 +71,7 @@ body{
 }
 
 .test2 {
-    height: 280px;
+    height: 320px;
 }
 
 .FormWrapper:hover + .test, .FormWrapper:hover + .test2{
@@ -99,7 +99,43 @@ body{
     transition: 0.7s;
 }
 
+.FormWrapper:hover .avatar-container {
+    color: rgb(255, 249, 235);
+    transition: 0.3s;
+}
+.FormWrapper:hover .avatar-container .avatars img  {
+    border: #fff9eb 0.15rem solid;
+    transition: 0.5s;
+}
+.avatar-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    margin-top: 15px;
+    margin-right: 1.5%;
+    gap: 10px;
+    color: #ef3933;
+    transition: 0.5s;
+}
+.change-avatar {
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration-line: underline;
+}
+.avatars {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: #fff9eb;
+}
 
+.avatars img {
+    border-radius: 5px;
+    border: #ef3933 0.15rem solid;
+    transition: 0.3s;
+}
 .input {
     width: 100%;
     padding: 8px 12px;
@@ -203,7 +239,6 @@ footer ul {
     animation-delay: 0.25s;
 }
 
-/* This approximates the ease-in-out-bounce animation from easings.net, which would require a plug-in to use*/
 @keyframes bounce {
     0% {
         transform: translateX(-1px);

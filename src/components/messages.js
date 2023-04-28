@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 function Messages({message, sender}) {
+
+
     return (
         <div>
             { (sender === 'me') &&

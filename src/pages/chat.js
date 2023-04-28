@@ -72,21 +72,24 @@ function Chat(props) {
 
     const handleMessageSubmit = (e) => {
         e.preventDefault();
-        sendMessage(selectedUser.userID, currentMessage)
-        //////////////////////////mesaj atıldığında bağlantı oluştur CROSS
-        if (!connections_.includes(selectedUser.userID)) {
-            updateUserConnections(getAuth().currentUser.uid, selectedUser.userID).then(()  => {
-                getUserData(getAuth().currentUser.uid).then((res) => {
-                    setConnections(res.connections);
+        if (currentMessage.length > 0) {
+            sendMessage(selectedUser.userID, currentMessage)
+            //////////////////////////mesaj atıldığında bağlantı oluştur CROSS
+            if (!connections_.includes(selectedUser.userID)) {
+                updateUserConnections(getAuth().currentUser.uid, selectedUser.userID).then(()  => {
+                    getUserData(getAuth().currentUser.uid).then((res) => {
+                        setConnections(res.connections);
+                    })
                 })
-            })
+            }
+            if (!selectedUser.connections.includes(getAuth().currentUser.uid)) {
+                updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
+            }
+            setCurrentMessage('')
+            setLatestMessages(selectedUser.userID,currentMessage)
+            setReporterBird()
         }
-        if (!selectedUser.connections.includes(getAuth().currentUser.uid)) {
-            updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
-        }
-        setCurrentMessage('')
-        setLatestMessages(selectedUser.userID,currentMessage)
-        setReporterBird()
+
     }
     return (
         <div className={'screen screenChat'}>
@@ -94,7 +97,7 @@ function Chat(props) {
                <div className={'connections-container'}>
                    <div className={'header-connections'}>
                       <div className={'user-info'}>
-                          <div className={'user-photo'}><img src={currentUserData.avatar} alt="avatar"/></div>
+                          <div className={'user-photo'}><img src={currentUserData.avatarLink} alt="avatar"/></div>
                           <div className={'user-display-name'}>{getAuth().currentUser?.displayName}</div>
                       </div>
                        <div className={'chat-logo'}></div>
@@ -102,13 +105,13 @@ function Chat(props) {
                    <div className={'connection-search'}>
                        <div className={'connection-search-bar'}>
                            <div className={'connection-search-icon'}><i className="fa fa-search"></i></div>
-                          <form onSubmit={handleSearchSubmit}>
+                          <form className={'search-form'} onSubmit={handleSearchSubmit}>
                               <input className={'connection-search-input'} type="text"
                                      placeholder={'Aratın veya yeni bir sohbet başlatın'}
                                      onChange={(e) => {
                                          (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
                                          setConnectionSearchInput(e.target.value)
-                                         setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value)))
+                                         setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
                                      } }
                               />
 
@@ -119,7 +122,7 @@ function Chat(props) {
                    <div className={'connections'}>
                        { searching &&
                            filteredUserData.map((x) => {
-                               return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID}  />
+                               return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID} userData={x}  />
                            })
                        }
                        { !searching &&
@@ -134,7 +137,7 @@ function Chat(props) {
                    <div className={'header-chat-area'}>
                        <div className={'header-chat-user-index'}>
                            {selectedUser &&
-                               <div className={'friend-logo'}><img src={selectedUser?.avatar} alt="avatar"/></div>
+                               <div className={'friend-logo'}><img src={selectedUser?.avatarLink} alt="avatar"/></div>
                            }
                            <div className={'friend-name'}>{selectedUser?.displayName}</div>
                        </div>
@@ -168,7 +171,7 @@ function Chat(props) {
                            </form>
                        </div>
                        <div className={'upload-photo-icon'}>📎</div>
-                       <div className={'send-button'}>Send</div>
+                       <div className={'send-button'} onClick={handleMessageSubmit}>Send</div>
                    </div>
                </div>
                {/*<div className={'chat-user-info-and-search-container'}>*/}

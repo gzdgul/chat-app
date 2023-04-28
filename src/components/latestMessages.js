@@ -38,7 +38,7 @@ function LatestMessages({UID, place, createNotification}) {
                 const time = [formattedHour,' : ', formattedMinute]
 
                 setContact({
-                    message_: ConnectionLatest.message,
+                    message_: ConnectionLatest.message?.slice(0,30),
                     date_: time
                 })
             });

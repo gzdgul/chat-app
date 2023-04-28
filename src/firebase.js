@@ -52,12 +52,13 @@ export const getAllUserData = async () => {
 
 
 
-export const setUserData = async (displayName, email) => {
+export const setUserData = async (displayName, email,avatarLink) => {
     const { userdata } = await setDoc(doc(db, "users", auth.currentUser.uid), {
         userID: auth.currentUser.uid,
         displayName: displayName,
         email: email,
         connections: [],
+        avatarLink: avatarLink
     });
     return userdata;
 }
