@@ -91,6 +91,18 @@ function Chat(props) {
         }
 
     }
+
+    const checkDate = (curr, prev) => {
+        const curr_date = new Date(curr.date);
+        const prev_date = new Date(prev.date);
+        if (curr_date.toLocaleDateString() !== prev_date.toLocaleDateString()) {
+            return (
+                <div style={{width: "100%", textAlign: "center", backgroundColor: "green"}}>
+                    {curr_date.toDateString()}
+                </div>
+            )
+        }
+    }
     return (
         <div className={'screen screenChat'}>
            <div className={'chatContainer'}>
@@ -152,12 +164,17 @@ function Chat(props) {
                            <div className={'chat-bubble'}>CHAT START</div>
                        </div>
                        {
-                           chat.map((messageObj) => {
-                               if (messageObj.senderUserId === getAuth().currentUser.uid) {
-                                   return <Messages message ={messageObj.message} sender='me' />
-                               } else {
-                                   return <Messages message ={messageObj.message} sender='friend' />
-                               }
+                           chat.map((messageObj, index) => {
+                               return (
+                                   <>
+                                       { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
+                                       {
+                                           (messageObj.senderUserId === getAuth().currentUser.uid)
+                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' />
+                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' />
+                                       }
+                                   </>
+                               )
                            })
                        }
                    </div>
@@ -174,16 +191,40 @@ function Chat(props) {
                        <div className={'send-button'} onClick={handleMessageSubmit}>Send</div>
                    </div>
                </div>
-               {/*<div className={'chat-user-info-and-search-container'}>*/}
-               {/*    <div className={'header-user-info'}>*/}
-               {/*        <button className={'cancel-button'}></button>*/}
-               {/*        <p>Kişi Bilgisi</p>*/}
-               {/*    </div>*/}
-               {/*    <div className={'user-photo-index'}>*/}
-               {/*        <div className={'user-photo-xl'}></div>*/}
-               {/*        <p>John Tester</p>*/}
-               {/*    </div>*/}
-               {/*</div>*/}
+               <div className={'chat-user-info-and-search-container'}>
+                   <div className={'header-user-info'}>
+                       <div>Kişi Bilgisi</div>
+                       <button className={'cancel-button'}>✖</button>
+
+                   </div>
+                   <div className={'user-photo-index'}>
+                       <div className={'user-photo-xl'}></div>
+                       <p className={'user-info-name'}>John Tester</p>
+                       <p className={'user-info-mail'}>john@test.com</p>
+                   </div>
+                   <div className={'user-info-media-container'}>
+                       <div className={'user-info-media-header'}>
+                           <p>Medyalar, bağlantılar ve belgeler</p>
+                           <div className={'user-info-media-arrow'}>›</div>
+                       </div>
+                       <div className={'user-info-media-footer-container'}>
+                           <div className={'user-info-media'}></div>
+                           <div className={'user-info-media'}></div>
+                           <div className={'user-info-media'}></div>
+                           <div className={'user-info-media'}></div>
+                           <div className={'user-info-media'}></div>
+                           <div className={'user-info-media'}></div>
+                       </div>
+
+                   </div>
+                   <div className={'user-info-action-container'}>
+                       <div className={'user-info-star-message'}><div className={'star-icon'}></div> Yıldızlı Mesajlar</div>
+                       <div className={'user-info-block'}> <div className={'block-icon'}></div> John Tester kişisini engelle</div>
+                       <div className={'user-info-report'}> <div className={'report-icon'}></div> John Tester kişisini şikayet et</div>
+                       <div className={'user-info-delete'}> <div className={'delete-icon'}></div> John Tester kişisini sil</div>
+                       <div className={'user-info-delete-messages'}> <div className={'delete-messages-icon'}></div> Tüm mesajları sil</div>
+                   </div>
+               </div>
            </div>
         </div>
     );

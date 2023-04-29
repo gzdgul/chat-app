@@ -26,7 +26,6 @@ function LatestMessages({UID, place, createNotification}) {
                 const LatestConnection = res.find(x => new Date(x.date).getTime() === arr[0].getTime())
                 setLatestConnection_(LatestConnection)
                 createNotification(LatestConnection)
-                console.log('LatestConnection',LatestConnection)
                 sortConnectionsList(LatestConnection.recieverID)
 
                 const ConnectionLatest = res.find(x => x.recieverID === UID)
