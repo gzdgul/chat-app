@@ -370,6 +370,7 @@ root{
     margin: 10px 0;
     position: sticky; /* Elemanın sabitlenmesini aktif hale getirin */
     top: 0; /* Elemanın yukarıya doğru sabitlenmesini istiyorsanız */
+    z-index: 1;
 
 }
 .date-bar {
@@ -381,6 +382,7 @@ root{
     border-radius: 10px;
     background-color: #212125;
     color: rgba(255, 249, 235, 0.78);
+
 
 }
 

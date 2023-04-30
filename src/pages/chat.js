@@ -17,6 +17,7 @@ import useLatestMessage from "../stores/useLatestMessage";
 import reporter from "../stores/reporter";
 
 function Chat(props) {
+    const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
     const [currentMessage, setCurrentMessage] = useState('')
     const [connectionSearchInput, setConnectionSearchInput] = useState('')
     const [allUserData, setAllUserData] = useState([])
@@ -35,18 +36,17 @@ function Chat(props) {
 
     useEffect(() => {
         getAllUserData().then((response) => {
+            setAllUserData(response.filter(x => x.userID !== getAuth().currentUser.uid));
             setConnections(response.find(x => x.userID === getAuth().currentUser.uid).connections);
             setCurrentUserData(response.find(x => x.userID === getAuth().currentUser.uid));
-            setAllUserData(response.filter(x => x.userID !== getAuth().currentUser.uid));
             const latestConnID = response.find(x => x.userID === getAuth().currentUser.uid).latestConnection;
-            getUserData(latestConnID).then((response) => {
-                setSelectedUser(response)
-            })
+            (latestConnID !== null) && getUserData(latestConnID).then((response) => setSelectedUser(response))
+
         });
     },[]);
 
     useEffect(() => {
-        if (selectedUser) {
+        if (selectedUser !== null) {
             listenMessage((snapshot) => {
                 let result = snapshotToArray(snapshot);
                 if (result) {
@@ -57,11 +57,7 @@ function Chat(props) {
                 }
                 setReporterBird();
                 setChat(result);
-                console.log('chatTEST',chat)
             });
-        }
-        else {
-
         }
 
     }, [selectedUser])
@@ -75,9 +71,9 @@ function Chat(props) {
         chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
     }, [chat])
 
-    const handleMessageSubmit = (e) => {
+    const handleMessageSubmit = (e) => { ////////////////// SEND MESSAGE
         e.preventDefault();
-        if (currentMessage.length > 0) {
+        if (currentMessage.length > 0 && selectedUser !== null) {
             sendMessage(selectedUser.userID, currentMessage)
             //////////////////////////mesaj atıldığında bağlantı oluştur CROSS
             if (!connections_.includes(selectedUser.userID)) {
@@ -94,6 +90,10 @@ function Chat(props) {
             setLatestMessages(selectedUser.userID,currentMessage)
             updateLatestConnection(selectedUser.userID)
             setReporterBird()
+        }
+        if (selectedUser === null && otoMessageCounter.length < 10) {
+            setOtoMessageCounter([...otoMessageCounter, '2'])
+            console.log('otoMessageCounter',otoMessageCounter)
         }
 
     }
@@ -209,9 +209,17 @@ function Chat(props) {
                    <div className={'chat-area'} ref={chatDiv}>
                        <div className={'chat-start'}></div>
                        {
+                          (selectedUser === null ) &&
+                           otoMessageCounter.map((x) => {
+                               return  <Messages message ={x} date={new Date()} sender='oto' />
+                           })
+                       }
+
+                       {
                            chat.map((messageObj, index) => {
                                return (
                                    <>
+
                                        { (index === 0) && checkDate(messageObj, new Date()) }
                                        { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
                                        {

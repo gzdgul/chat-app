@@ -59,7 +59,7 @@ export const setUserData = async (displayName, email,avatarLink) => {
         email: email,
         connections: [],
         avatarLink: avatarLink,
-        latestConnection: ''
+        latestConnection: null
     });
     return userdata;
 }
