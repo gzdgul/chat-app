@@ -9,7 +9,7 @@ function LatestMessages({UID, place, createNotification}) {
         date_: null
     });
     const [LatestConnection_,setLatestConnection_] = useState(null)
-    const sortConnectionsList = useConnections(state => state.sortConnections); //HABERCİ KUŞ
+    const sortConnectionsList = useConnections(state => state.sortConnections);
     const reporterBird = reporter(state => state.reporter); //HABERCİ KUŞ
 
 

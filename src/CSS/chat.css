@@ -29,11 +29,8 @@ root{
 }
 
 .chat-area-container {
-    /*width: 48%;*/
     width: 70%;
-    /*width: var(--chtWidth);*/
-    max-width: 70%;
-    /* min-width: fit-content; */
+    min-width: 45%;
     background-color: #0e0e10;
     display: flex;
     flex-direction: column;
@@ -41,12 +38,28 @@ root{
     justify-content: space-between;
 }
 
-.chat-user-info-and-search-container {
-    width: 22%;
+.chat-user-info-container, .chat-user-search-container {
+    display: flex;
+    flex-direction: column;
+    width: 0;
     background-color: #0e0e10;
-    min-width: 275px;
+    opacity: 0;
+    transition: opacity 0.1s , width 0.3s;
 
 }
+
+.showInf {
+    width: 40%;
+    opacity: 1;
+    transition: width 0.3s, opacity 0.2s 0.2s;
+}
+
+.showSrc {
+    width: 40%;
+    opacity: 1;
+    transition: width 0.3s, opacity 0.2s 0.2s;
+}
+
 
 .header-user-info {
     display: flex;
@@ -84,9 +97,10 @@ root{
 .user-photo-xl {
     width: 150px;
     height: 150px;
-    border-radius: 100px;
-    background-color: red;
     margin-bottom: 10px;
+}
+.user-photo-xl img {
+    border-radius: 100px;
 }
 .user-info-name {
     font-size: 1.3rem;
@@ -108,6 +122,7 @@ root{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding: 0 10px;
     align-items: center;
     width: 100%;
     height: 30%;
@@ -128,6 +143,7 @@ root{
     height: 60%;
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
     overflow-y: scroll;
@@ -277,6 +293,7 @@ root{
     align-items: center;
     justify-content: center;
     color: rgba(255, 249, 235, 0.93);
+
     width: 13%;
 }
 .connection-search-input {
@@ -347,6 +364,7 @@ root{
     height: 33px;
     margin: 10px 20px 10px 0;
     cursor: pointer;
+    background-color: #00ad67;
 }
 
 .chat-area {

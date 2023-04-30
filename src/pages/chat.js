@@ -15,9 +15,13 @@ import useSelectUser from "../stores/useSelectUser";
 import useConnections from "../stores/useConnections";
 import useLatestMessage from "../stores/useLatestMessage";
 import reporter from "../stores/reporter";
+import InfoContainer from "../components/infoContainer";
+import SearchMessageContainer from "../components/searchMessageContainer";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
+    const [showInfoContainer, setShowInfoContainer] = useState(false)
+    const [showSearchContainer, setShowSearchContainer] = useState(false)
     const [currentMessage, setCurrentMessage] = useState('')
     const [connectionSearchInput, setConnectionSearchInput] = useState('')
     const [allUserData, setAllUserData] = useState([])
@@ -30,7 +34,6 @@ function Chat(props) {
     const setConnections = useConnections(state => state.setConnections);
     const setLatestMessage = useLatestMessage(state => state.setMessage);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
-
     const [chat, setChat] = useState([]);
     const chatDiv = useRef(null);
 
@@ -59,6 +62,12 @@ function Chat(props) {
                 setChat(result);
             });
         }
+        else {
+            listenMessage((snapshot) => { ///////////////!!!!!!!!!
+                snapshotToArray(snapshot);
+            });
+            setReporterBird();
+        }
 
     }, [selectedUser])
 
@@ -71,7 +80,7 @@ function Chat(props) {
         chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
     }, [chat])
 
-    const handleMessageSubmit = (e) => { ////////////////// SEND MESSAGE
+    const handleMessageSubmit = async (e) => { ////////////////// SEND MESSAGE
         e.preventDefault();
         if (currentMessage.length > 0 && selectedUser !== null) {
             sendMessage(selectedUser.userID, currentMessage)
@@ -84,18 +93,26 @@ function Chat(props) {
                 })
             }
             if (!selectedUser.connections.includes(getAuth().currentUser.uid)) {
-                updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
+                await updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
             }
             setCurrentMessage('')
-            setLatestMessages(selectedUser.userID,currentMessage)
+            await setLatestMessages(selectedUser.userID,currentMessage)
             updateLatestConnection(selectedUser.userID)
             setReporterBird()
         }
         if (selectedUser === null && otoMessageCounter.length < 10) {
             setOtoMessageCounter([...otoMessageCounter, '2'])
-            console.log('otoMessageCounter',otoMessageCounter)
         }
 
+    }
+
+    const userInfoToggle = () => {
+        (showSearchContainer === true) && setShowSearchContainer(!showSearchContainer)
+        setShowInfoContainer(!showInfoContainer)
+    }
+    const searchMessageToggle = () => {
+        (showInfoContainer === true) && setShowInfoContainer(!showInfoContainer)
+        setShowSearchContainer(!showSearchContainer)
     }
 
     // const sabitlenenElemanRef = useRef(null);
@@ -194,7 +211,7 @@ function Chat(props) {
                </div>
                <div className={'chat-area-container'}>
                    <div className={'header-chat-area'}>
-                       <div className={'header-chat-user-index'}>
+                       <div className={'header-chat-user-index'} onClick={userInfoToggle}>
                            {selectedUser &&
                                <div className={'friend-logo'}><img src={selectedUser?.avatarLink} alt="avatar"/></div>
                            }
@@ -202,7 +219,7 @@ function Chat(props) {
                        </div>
 
                        <div className={'chat-options'}>
-                           <div className={'chat-search-icon'}><i className="fa fa-search"></i></div>
+                           <div className={'chat-search-icon'} onClick={searchMessageToggle} ><i className="fa fa-search"></i></div>
                            <div className={'chat-options-icon'}>︙</div>
                        </div>
                    </div>
@@ -245,40 +262,8 @@ function Chat(props) {
                        <div className={'send-button'} onClick={handleMessageSubmit}>Send</div>
                    </div>
                </div>
-               {/*<div className={'chat-user-info-and-search-container'}>*/}
-               {/*    <div className={'header-user-info'}>*/}
-               {/*        <div>Kişi Bilgisi</div>*/}
-               {/*        <button className={'cancel-button'}>✖</button>*/}
-
-               {/*    </div>*/}
-               {/*    <div className={'user-photo-index'}>*/}
-               {/*        <div className={'user-photo-xl'}></div>*/}
-               {/*        <p className={'user-info-name'}>John Tester</p>*/}
-               {/*        <p className={'user-info-mail'}>john@test.com</p>*/}
-               {/*    </div>*/}
-               {/*    <div className={'user-info-media-container'}>*/}
-               {/*        <div className={'user-info-media-header'}>*/}
-               {/*            <p>Medyalar, bağlantılar ve belgeler</p>*/}
-               {/*            <div className={'user-info-media-arrow'}>›</div>*/}
-               {/*        </div>*/}
-               {/*        <div className={'user-info-media-footer-container'}>*/}
-               {/*            <div className={'user-info-media'}></div>*/}
-               {/*            <div className={'user-info-media'}></div>*/}
-               {/*            <div className={'user-info-media'}></div>*/}
-               {/*            <div className={'user-info-media'}></div>*/}
-               {/*            <div className={'user-info-media'}></div>*/}
-               {/*            <div className={'user-info-media'}></div>*/}
-               {/*        </div>*/}
-
-               {/*    </div>*/}
-               {/*    <div className={'user-info-action-container'}>*/}
-               {/*        <div className={'user-info-star-message'}><div className={'star-icon'}></div> Yıldızlı Mesajlar</div>*/}
-               {/*        <div className={'user-info-block'}> <div className={'block-icon'}></div> John Tester kişisini engelle</div>*/}
-               {/*        <div className={'user-info-report'}> <div className={'report-icon'}></div> John Tester kişisini şikayet et</div>*/}
-               {/*        <div className={'user-info-delete'}> <div className={'delete-icon'}></div> John Tester kişisini sil</div>*/}
-               {/*        <div className={'user-info-delete-messages'}> <div className={'delete-messages-icon'}></div> Tüm mesajları sil</div>*/}
-               {/*    </div>*/}
-               {/*</div>*/}
+                   <InfoContainer showInf={showInfoContainer} setShowInf={setShowInfoContainer} user={selectedUser}/>
+                   <SearchMessageContainer showSrc={showSearchContainer} setShowSrc={setShowSearchContainer} user={selectedUser} />
            </div>
         </div>
     );

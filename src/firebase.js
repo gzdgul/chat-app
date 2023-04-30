@@ -64,7 +64,7 @@ export const setUserData = async (displayName, email,avatarLink) => {
     return userdata;
 }
 export const setLatestMessages = async (recieverUID, latestMessage) => {
-    setDoc(doc(db, "users", recieverUID, "latestMessages", auth.currentUser.uid), {
+    await setDoc(doc(db, "users", recieverUID, "latestMessages", auth.currentUser.uid), {
         message: latestMessage,
         recieverID: auth.currentUser.uid,
         sender: 'reciever',
