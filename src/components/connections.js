@@ -23,6 +23,7 @@ function Connections({userId, userData}) {
         })
     }, [])
 
+
     const createNotification = (LatestConnection) => {
         setTest(LatestConnection.message)
         if (LatestConnection.message !== test && LatestConnection.recieverID === userId) {

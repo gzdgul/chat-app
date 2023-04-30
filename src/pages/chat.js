@@ -5,8 +5,8 @@ import {
     getAllUserData, getLatestMessages,
     getUserData,
     listenMessage,
-    sendMessage, setLatestMessages,
-    snapshotToArray,
+    sendMessage, setLatestConnection, setLatestMessages,
+    snapshotToArray, updateLatestConnection,
     updateUserConnections
 } from "../firebase";
 import Messages from "../components/messages";
@@ -24,6 +24,7 @@ function Chat(props) {
     const [filteredUserData, setFilteredUserData] = useState([])
     const [searching, setSearching] = useState(false)
     const selectedUser = useSelectUser(state => state.user);
+    const setSelectedUser = useSelectUser(state => state.setUser);
     const connections_ = useConnections(state => state.connections_);
     const setConnections = useConnections(state => state.setConnections);
     const setLatestMessage = useLatestMessage(state => state.setMessage);
@@ -37,6 +38,10 @@ function Chat(props) {
             setConnections(response.find(x => x.userID === getAuth().currentUser.uid).connections);
             setCurrentUserData(response.find(x => x.userID === getAuth().currentUser.uid));
             setAllUserData(response.filter(x => x.userID !== getAuth().currentUser.uid));
+            const latestConnID = response.find(x => x.userID === getAuth().currentUser.uid).latestConnection;
+            getUserData(latestConnID).then((response) => {
+                setSelectedUser(response)
+            })
         });
     },[]);
 
@@ -87,18 +92,60 @@ function Chat(props) {
             }
             setCurrentMessage('')
             setLatestMessages(selectedUser.userID,currentMessage)
+            updateLatestConnection(selectedUser.userID)
             setReporterBird()
         }
 
     }
 
+    // const sabitlenenElemanRef = useRef(null);
+    // const sabitlenenElemanPozisyon = useRef(null);
+    //
+    // useEffect(() => {
+    //     if (sabitlenenElemanRef.current) {
+    //         sabitlenenElemanPozisyon.current = sabitlenenElemanRef.current.getBoundingClientRect();
+    //     }
+    // }, [sabitlenenElemanRef.current]);
+    //
+    //
+    // useEffect(() => {
+    //     function handleScroll() {
+    //         if (sabitlenenElemanRef.current) {
+    //             const pozisyon = sabitlenenElemanRef.current.getBoundingClientRect();
+    //             if (pozisyon.top >= 0 && pozisyon.bottom <= window.innerHeight) {
+    //                 sabitlenenElemanRef.current.style.position = "sticky";
+    //                 sabitlenenElemanRef.current.style.top = "0";
+    //             } else {
+    //                 sabitlenenElemanRef.current.style.position = "static";
+    //             }
+    //         }
+    //     }
+    //     // chatDiv.addEventListener("scroll", handleScroll);
+    //     // return () => chatDiv.removeEventListener("scroll", handleScroll);
+    // }, []);
+
     const checkDate = (curr, prev) => {
         const curr_date = new Date(curr.date);
         const prev_date = new Date(prev.date);
+        const today_date = new Date()
+        const diffTime = Math.abs(today_date - curr_date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         if (curr_date.toLocaleDateString() !== prev_date.toLocaleDateString()) {
             return (
-                <div style={{width: "100%", textAlign: "center", backgroundColor: "green"}}>
-                    {curr_date.toDateString()}
+                <div className={'date-bar-container'} >
+                    <div className={'date-bar'}>
+                        {
+                            (today_date.toLocaleDateString() === curr_date.toLocaleDateString())
+                                ? 'Bugün'
+                                : (diffDays < 8) ?
+                                    (diffDays === 1)
+                                    ? 'Dün'
+                                    : curr_date.toLocaleDateString('default', { weekday: 'long' })
+                                                :  (diffDays < 365)
+                                                    ? curr_date.toLocaleDateString('default', { day: 'numeric', month: 'long', weekday: 'short' })
+                                                    : curr_date.toLocaleDateString('default', { day: 'numeric', month: 'long', year: 'numeric' })
+                        }
+                    </div>
                 </div>
             )
         }
@@ -160,13 +207,12 @@ function Chat(props) {
                        </div>
                    </div>
                    <div className={'chat-area'} ref={chatDiv}>
-                       <div className={'chat-start'}>
-                           <div className={'chat-bubble'}>CHAT START</div>
-                       </div>
+                       <div className={'chat-start'}></div>
                        {
                            chat.map((messageObj, index) => {
                                return (
                                    <>
+                                       { (index === 0) && checkDate(messageObj, new Date()) }
                                        { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
                                        {
                                            (messageObj.senderUserId === getAuth().currentUser.uid)
@@ -191,40 +237,40 @@ function Chat(props) {
                        <div className={'send-button'} onClick={handleMessageSubmit}>Send</div>
                    </div>
                </div>
-               <div className={'chat-user-info-and-search-container'}>
-                   <div className={'header-user-info'}>
-                       <div>Kişi Bilgisi</div>
-                       <button className={'cancel-button'}>✖</button>
+               {/*<div className={'chat-user-info-and-search-container'}>*/}
+               {/*    <div className={'header-user-info'}>*/}
+               {/*        <div>Kişi Bilgisi</div>*/}
+               {/*        <button className={'cancel-button'}>✖</button>*/}
 
-                   </div>
-                   <div className={'user-photo-index'}>
-                       <div className={'user-photo-xl'}></div>
-                       <p className={'user-info-name'}>John Tester</p>
-                       <p className={'user-info-mail'}>john@test.com</p>
-                   </div>
-                   <div className={'user-info-media-container'}>
-                       <div className={'user-info-media-header'}>
-                           <p>Medyalar, bağlantılar ve belgeler</p>
-                           <div className={'user-info-media-arrow'}>›</div>
-                       </div>
-                       <div className={'user-info-media-footer-container'}>
-                           <div className={'user-info-media'}></div>
-                           <div className={'user-info-media'}></div>
-                           <div className={'user-info-media'}></div>
-                           <div className={'user-info-media'}></div>
-                           <div className={'user-info-media'}></div>
-                           <div className={'user-info-media'}></div>
-                       </div>
+               {/*    </div>*/}
+               {/*    <div className={'user-photo-index'}>*/}
+               {/*        <div className={'user-photo-xl'}></div>*/}
+               {/*        <p className={'user-info-name'}>John Tester</p>*/}
+               {/*        <p className={'user-info-mail'}>john@test.com</p>*/}
+               {/*    </div>*/}
+               {/*    <div className={'user-info-media-container'}>*/}
+               {/*        <div className={'user-info-media-header'}>*/}
+               {/*            <p>Medyalar, bağlantılar ve belgeler</p>*/}
+               {/*            <div className={'user-info-media-arrow'}>›</div>*/}
+               {/*        </div>*/}
+               {/*        <div className={'user-info-media-footer-container'}>*/}
+               {/*            <div className={'user-info-media'}></div>*/}
+               {/*            <div className={'user-info-media'}></div>*/}
+               {/*            <div className={'user-info-media'}></div>*/}
+               {/*            <div className={'user-info-media'}></div>*/}
+               {/*            <div className={'user-info-media'}></div>*/}
+               {/*            <div className={'user-info-media'}></div>*/}
+               {/*        </div>*/}
 
-                   </div>
-                   <div className={'user-info-action-container'}>
-                       <div className={'user-info-star-message'}><div className={'star-icon'}></div> Yıldızlı Mesajlar</div>
-                       <div className={'user-info-block'}> <div className={'block-icon'}></div> John Tester kişisini engelle</div>
-                       <div className={'user-info-report'}> <div className={'report-icon'}></div> John Tester kişisini şikayet et</div>
-                       <div className={'user-info-delete'}> <div className={'delete-icon'}></div> John Tester kişisini sil</div>
-                       <div className={'user-info-delete-messages'}> <div className={'delete-messages-icon'}></div> Tüm mesajları sil</div>
-                   </div>
-               </div>
+               {/*    </div>*/}
+               {/*    <div className={'user-info-action-container'}>*/}
+               {/*        <div className={'user-info-star-message'}><div className={'star-icon'}></div> Yıldızlı Mesajlar</div>*/}
+               {/*        <div className={'user-info-block'}> <div className={'block-icon'}></div> John Tester kişisini engelle</div>*/}
+               {/*        <div className={'user-info-report'}> <div className={'report-icon'}></div> John Tester kişisini şikayet et</div>*/}
+               {/*        <div className={'user-info-delete'}> <div className={'delete-icon'}></div> John Tester kişisini sil</div>*/}
+               {/*        <div className={'user-info-delete-messages'}> <div className={'delete-messages-icon'}></div> Tüm mesajları sil</div>*/}
+               {/*    </div>*/}
+               {/*</div>*/}
            </div>
         </div>
     );

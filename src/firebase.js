@@ -58,7 +58,8 @@ export const setUserData = async (displayName, email,avatarLink) => {
         displayName: displayName,
         email: email,
         connections: [],
-        avatarLink: avatarLink
+        avatarLink: avatarLink,
+        latestConnection: ''
     });
     return userdata;
 }
@@ -87,6 +88,7 @@ export const getLatestMessages = async () => {
         return [];
     }
 }
+
 export const updateUserConnections = async (senderID, recieverID) => {
     const userRef = doc(db, "users", senderID);
     return await updateDoc(userRef, {
@@ -94,6 +96,12 @@ export const updateUserConnections = async (senderID, recieverID) => {
     });
 }
 
+export const updateLatestConnection = async  (recieverID) => {
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    return await updateDoc(userRef, {
+        latestConnection: recieverID
+    });
+}
 export const updateDisplayName = async  (displayName) => {
     const { user } = await updateProfile(auth.currentUser, {
         displayName: displayName
