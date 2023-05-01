@@ -269,7 +269,7 @@
     overflow-x: hidden;
 }
 
-.connection-search {
+.search {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -280,14 +280,14 @@
 .search-form {
     width: 85%;
 }
-.connection-search-bar {
+.search-bar {
     display: flex;
     background-color: #3d3d3f;
     border-radius: 10px;
     width: 93%;
     height: 35px;
 }
-.connection-search-icon {
+.search-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -295,17 +295,31 @@
 
     width: 13%;
 }
-.connection-search-input {
+.connection-search-input, .message-search-input {
     width: 95%;
     height: 35px;
     background-color: transparent;
     color: #fff9eb;
 }
 
-.connection-search-input::placeholder {
+.connection-search-input::placeholder, .message-search-input::placeholder {
     font-size: 0.9rem;
 }
 
+.filtered-message-container {
+    height: 82%;
+    max-width: 430px;
+}
+.filtered-message {
+    color: #fff9eb;
+    font-size: 0.85rem;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 5px 15px;
+    word-wrap: break-word;
+    cursor: pointer;
+}
 .header-chat-area {
     display: flex;
     justify-content: space-between;

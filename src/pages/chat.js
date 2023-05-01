@@ -18,6 +18,7 @@ import reporter from "../stores/reporter";
 import InfoContainer from "../components/infoContainer";
 import SearchMessageContainer from "../components/searchMessageContainer";
 import CurrentUserInfoContainer from "../components/currentUserInfoContainer";
+import useSelectMessage from "../stores/useSelectMessage";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
@@ -31,11 +32,13 @@ function Chat(props) {
     const [filteredUserData, setFilteredUserData] = useState([])
     const [searching, setSearching] = useState(false)
     const selectedUser = useSelectUser(state => state.user);
+    const selectedMessage = useSelectMessage(state => state.selectedMessage);
     const setSelectedUser = useSelectUser(state => state.setUser);
     const connections_ = useConnections(state => state.connections_);
     const setConnections = useConnections(state => state.setConnections);
     const setLatestMessage = useLatestMessage(state => state.setMessage);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
+    const [chatOrj, setChatOrj] = useState([]);
     const [chat, setChat] = useState([]);
     const chatDiv = useRef(null);
 
@@ -62,6 +65,7 @@ function Chat(props) {
                 }
                 setReporterBird();
                 setChat(result);
+                setChatOrj(result);
             });
         }
         else {
@@ -81,6 +85,17 @@ function Chat(props) {
     useEffect(() => {
         chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
     }, [chat])
+
+    useEffect(() => {
+        if (selectedMessage) {
+            const messageElems = chatDiv.current.querySelectorAll('.chat-bubble');
+            messageElems.forEach((elem) => {
+                if (elem.textContent.includes(selectedMessage)) {
+                    elem.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    }, [selectedMessage]);
 
     const handleMessageSubmit = async (e) => { ////////////////// SEND MESSAGE
         e.preventDefault();
@@ -186,9 +201,9 @@ function Chat(props) {
                    <CurrentUserInfoContainer showCurrUserInf={showCurrInfoContainer} setShowCurrUserInf={setShowCurrInfoContainer} user={currentUserData}/>
                    {
                        <>
-                           <div className={'connection-search'}>
-                               <div className={'connection-search-bar'}>
-                                   <div className={'connection-search-icon'}><i className="fa fa-search"></i></div>
+                           <div className={'search'}>
+                               <div className={'search-bar'}>
+                                   <div className={'search-icon'}><i className="fa fa-search"></i></div>
                                    <form className={'search-form'} onSubmit={handleSearchSubmit}>
                                        <input className={'connection-search-input'} type="text"
                                               placeholder={'Aratın veya yeni bir sohbet başlatın'}
@@ -271,7 +286,7 @@ function Chat(props) {
                        <div className={'send-button'} onClick={handleMessageSubmit}>Send</div>
                    </div>
                </div>
-               <SearchMessageContainer showSrc={showSearchContainer} setShowSrc={setShowSearchContainer} user={selectedUser} />
+               <SearchMessageContainer showSrc={showSearchContainer} setShowSrc={setShowSearchContainer} chat={chatOrj} user={selectedUser} />
                <InfoContainer showInf={showInfoContainer} setShowInf={setShowInfoContainer} user={selectedUser}/>
            </div>
         </div>

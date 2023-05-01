@@ -5,7 +5,7 @@ import {updateDisplayName} from "../firebase";
 function CurrentUserInfoContainer({showCurrUserInf, setShowCurrUserInf, user}) {
     const currentUserInfoContainerRef = useRef(null);
     const [editMode, setEditMode] = useState(false)
-    const [displayName, setDisplayName] = useState(user.displayName)
+    const [displayName, setDisplayName] = useState(user?.displayName)
 
     useEffect(() => {
         if (showCurrUserInf) {

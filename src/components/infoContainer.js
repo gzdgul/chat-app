@@ -15,7 +15,7 @@ function InfoContainer({showInf, setShowInf, user}) {
             {
                 <div className={'chat-user-info-container'} ref={infoContainerRef}>
                     <div className={'header-user-info'}>
-                        <div>Kişi Bilgisi</div>
+                        <p>Kişi Bilgisi</p>
                         <button className={'cancel-button'} onClick={() => setShowInf(!showInf)}>✖</button>
 
                     </div>
