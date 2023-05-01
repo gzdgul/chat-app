@@ -1,0 +1,100 @@
+.current-user-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    height: 0;
+    opacity: 0;
+    color: #fff9eb;
+    pointer-events: none;
+    transition: height 0.7s, opacity 0.2s;
+}
+.showCurrUserInf {
+    height: 770px;
+    opacity: 1;
+    pointer-events: auto;
+    transition: height 0.7s, opacity 0.7s 0.2s;
+}
+.current-user-info-header {
+    height: 40px;
+    display: flex;
+    margin: 15px 22px 0 22px;
+    align-items: center;
+
+    font-weight: 800;
+
+}
+.my-profile {
+    font-size: 0.95rem;
+    background-color: #ef3933;
+    border-radius: 20px;
+    padding: 2px 15px;
+}
+.current-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.avatar-xl {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+
+}
+.avatar-xl img {
+    width: 110px;
+    height: 110px;
+    border-radius: 60px;
+}
+.display-name-container, .about-me-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    flex-direction: row;
+    height: 50px;
+    border-bottom: 1px solid #3d3d3f;
+    margin: 10px;
+}
+.display-name, .about-me {
+    display: flex;
+    width: 90%;
+    height: 90%;
+    align-items: center;
+    margin-left: 15px;
+}
+
+
+.display-name-edit-form {
+    display: flex;
+    width: 90%;
+    height: 90%;
+    align-items: center;
+}
+
+.display-name-edit-input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border-bottom: #ef3933 0.2rem solid;
+    padding: 0 15px;
+    font-size: 1.1rem;
+}
+
+
+label {
+    margin-right: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: 20px;
+    color: #ef3933;
+}
+
+.display-name-edit-icon, .about-me-edit-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+}

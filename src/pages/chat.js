@@ -17,10 +17,12 @@ import useLatestMessage from "../stores/useLatestMessage";
 import reporter from "../stores/reporter";
 import InfoContainer from "../components/infoContainer";
 import SearchMessageContainer from "../components/searchMessageContainer";
+import CurrentUserInfoContainer from "../components/currentUserInfoContainer";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
     const [showInfoContainer, setShowInfoContainer] = useState(false)
+    const [showCurrInfoContainer, setShowCurrInfoContainer] = useState(false)
     const [showSearchContainer, setShowSearchContainer] = useState(false)
     const [currentMessage, setCurrentMessage] = useState('')
     const [connectionSearchInput, setConnectionSearchInput] = useState('')
@@ -110,6 +112,9 @@ function Chat(props) {
         (showSearchContainer === true) && setShowSearchContainer(!showSearchContainer)
         setShowInfoContainer(!showInfoContainer)
     }
+    const currUserInfoToggle = () => {
+        setShowCurrInfoContainer(!showCurrInfoContainer)
+    }
     const searchMessageToggle = () => {
         (showInfoContainer === true) && setShowInfoContainer(!showInfoContainer)
         setShowSearchContainer(!showSearchContainer)
@@ -172,42 +177,46 @@ function Chat(props) {
            <div className={'chatContainer'}>
                <div className={'connections-container'}>
                    <div className={'header-connections'}>
-                      <div className={'user-info'}>
+                      <div className={'user-info'} onClick={currUserInfoToggle}>
                           <div className={'user-photo'}><img src={currentUserData.avatarLink} alt="avatar"/></div>
                           <div className={'user-display-name'}>{getAuth().currentUser?.displayName}</div>
                       </div>
                        <div className={'chat-logo'}></div>
                    </div>
-                   <div className={'connection-search'}>
-                       <div className={'connection-search-bar'}>
-                           <div className={'connection-search-icon'}><i className="fa fa-search"></i></div>
-                          <form className={'search-form'} onSubmit={handleSearchSubmit}>
-                              <input className={'connection-search-input'} type="text"
-                                     placeholder={'Aratın veya yeni bir sohbet başlatın'}
-                                     onChange={(e) => {
-                                         (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
-                                         setConnectionSearchInput(e.target.value)
-                                         setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
-                                     } }
-                              />
+                   <CurrentUserInfoContainer showCurrUserInf={showCurrInfoContainer} setShowCurrUserInf={setShowCurrInfoContainer} user={currentUserData}/>
+                   {
+                       <>
+                           <div className={'connection-search'}>
+                               <div className={'connection-search-bar'}>
+                                   <div className={'connection-search-icon'}><i className="fa fa-search"></i></div>
+                                   <form className={'search-form'} onSubmit={handleSearchSubmit}>
+                                       <input className={'connection-search-input'} type="text"
+                                              placeholder={'Aratın veya yeni bir sohbet başlatın'}
+                                              onChange={(e) => {
+                                                  (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
+                                                  setConnectionSearchInput(e.target.value)
+                                                  setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
+                                              } }
+                                       />
 
-                          </form>
-                       </div>
+                                   </form>
+                               </div>
 
-                   </div>
-                   <div className={'connections'}>
-                       { searching &&
-                           filteredUserData.map((x) => {
-                               return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID} userData={x}  />
-                           })
-                       }
-                       { !searching &&
-                           connections_?.map((x) => {
-                               return <Connections key={'COMP_CONNECTION_' + x} userId={x}  />
-                           })
-                       }
-
-                   </div>
+                           </div>
+                           <div className={'connections'}>
+                               { searching &&
+                                   filteredUserData.map((x) => {
+                                       return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID} userData={x}  />
+                                   })
+                               }
+                               { !searching &&
+                                   connections_?.map((x) => {
+                                       return <Connections key={'COMP_CONNECTION_' + x} userId={x}  />
+                                   })
+                               }
+                           </div>
+                       </>
+                   }
                </div>
                <div className={'chat-area-container'}>
                    <div className={'header-chat-area'}>
@@ -262,8 +271,8 @@ function Chat(props) {
                        <div className={'send-button'} onClick={handleMessageSubmit}>Send</div>
                    </div>
                </div>
-                   <InfoContainer showInf={showInfoContainer} setShowInf={setShowInfoContainer} user={selectedUser}/>
-                   <SearchMessageContainer showSrc={showSearchContainer} setShowSrc={setShowSearchContainer} user={selectedUser} />
+               <SearchMessageContainer showSrc={showSearchContainer} setShowSrc={setShowSearchContainer} user={selectedUser} />
+               <InfoContainer showInf={showInfoContainer} setShowInf={setShowInfoContainer} user={selectedUser}/>
            </div>
         </div>
     );

@@ -2,17 +2,23 @@ import React, {useState} from 'react';
 import {login} from "../firebase";
 import { CSSTransition } from 'react-transition-group';
 import { Link } from 'react-router-dom';
+import { useNavigate  } from 'react-router-dom';
 
 function Login(props) {
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
     const [authorisedUser, setAuthorisedUser] = useState(false)
+    const navigate  = useNavigate ();
+
 
     const handleUserFormSubmit = async (e) => {
         e.preventDefault()
         const user = await login(email,password)
         if (user !== undefined) {
             setAuthorisedUser(true)
+            setTimeout(() => {
+                navigate('/chat');
+            }, 2000);
         }
         console.log(user)
 

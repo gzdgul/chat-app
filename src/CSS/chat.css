@@ -1,8 +1,3 @@
-root{
-    --infoWidth: 22%;
-    --chtWidth: calc(70% - --infoWidth);
-}
-
 .chatContainer {
     display: flex;
     flex-direction: row;
@@ -44,17 +39,20 @@ root{
     width: 0;
     background-color: #0e0e10;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.1s , width 0.3s;
 
 }
 
 .showInf {
+    pointer-events: auto;
     width: 40%;
     opacity: 1;
     transition: width 0.3s, opacity 0.2s 0.2s;
 }
 
 .showSrc {
+    pointer-events: auto;
     width: 40%;
     opacity: 1;
     transition: width 0.3s, opacity 0.2s 0.2s;
@@ -224,7 +222,8 @@ root{
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    height: 6%;
+    min-height: 53px;
+    border-bottom: 1px solid #1e1e1e;
     background-color: #fff9eb;
     border-radius: 15px 0 0 0;
 }
@@ -310,8 +309,10 @@ root{
 .header-chat-area {
     display: flex;
     justify-content: space-between;
-    height: 6%;
+    min-height: 53px;
     background-color: #f13e3e;
+    border-bottom: 1px solid #1e1e1e;
+
 }
 
 .header-chat-user-index {
@@ -364,7 +365,6 @@ root{
     height: 33px;
     margin: 10px 20px 10px 0;
     cursor: pointer;
-    background-color: #00ad67;
 }
 
 .chat-area {

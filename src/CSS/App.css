@@ -133,7 +133,6 @@ body{
 
 .avatars img {
     border-radius: 5px;
-    border: #ef3933 0.15rem solid;
     transition: 0.3s;
 }
 .input {

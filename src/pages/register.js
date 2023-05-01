@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {register, updateDisplayName, setUserData} from "../firebase";
 import { Link } from "react-router-dom";
+import { useNavigate  } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 import ModalAvatar from "../components/modal-avatar";
 import useSelectAvatar from "../stores/useSelectAvatar";
 import useToggleAvatarMenu from "../stores/useToggleAvatarMenu";
 
 function Register(props) {
+    const navigate  = useNavigate ();
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
     const [displayName,setDisplayName] = useState('')
@@ -38,16 +40,18 @@ function Register(props) {
         e.preventDefault()
         try {
             const user = await register(email,password)
-            localStorage.setItem("username", displayName);
+
+            // localStorage.setItem("username", displayName);
             setAuthorisedUser(true)
-            console.log(user)
+            setTimeout(() => {
+                navigate('/chat');
+            }, 2000);
         }
         catch (err) {
             (err.message.includes('invalid-email')) ? setErrMesage('Geçersiz e-mail') :
                 (err.message.includes('email-already-in-use')) ? setErrMesage('E-posta adresi zaten kayıtlı. Lütfen farklı bir e-posta adresi kullanın.') :
                     (err.message.includes('weak-password')) ? setErrMesage('Şifreniz çok zayıf. Lütfen daha güçlü bir şifre oluşturun.') :
                         setErrMesage('UNKNOWN ERROR')
-            console.log(err.message)
         }
         try {
             const userDisplayName = await updateDisplayName(displayName)
@@ -93,7 +97,7 @@ function Register(props) {
                                 <form className={(errMesage) ? 'form bounce' : 'form'} onSubmit={handleUserFormSubmit}>
                                     <div className={'avatar-container'}>
                                         <span className={'change-avatar'} onClick={handleClickChangeAvatar}>change avatar</span>
-                                        <div className={'avatars'}><img src={avatarLink} alt=""/></div>
+                                        <div className={'avatars'}><img src={avatarLink ? avatarLink : 'https://i.ibb.co/LCTkL59/avatar-logo-k.jpg'} alt=""/></div>
                                     </div>
                                     <input className={'input'}
                                            type="text"
