@@ -1,11 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
 import FilteredMessages from "./filteredMessages";
+import useSelectUser from "../stores/useSelectUser";
 
 function SearchMessageContainer({showSrc, setShowSrc, chat, user}) {
     const [searching, setSearching] = useState(false)
     const [messageSearchInput, setMessageSearchInput] = useState('')
     const [filteredMessages, setFilteredMessages] = useState('')
     const SearchContainerRef = useRef(null);
+    const selectedUser = useSelectUser(state => state.user);
+
 
 
     useEffect(() => {
@@ -16,8 +19,10 @@ function SearchMessageContainer({showSrc, setShowSrc, chat, user}) {
         }
     }, [showSrc]);
 
-    console.log('filteredMessages',filteredMessages)
-
+    useEffect(() => {
+        setSearching(false)
+        setMessageSearchInput('')
+    },[selectedUser])
 
 
     const handleSearchSubmit = (e) => {
@@ -39,6 +44,7 @@ function SearchMessageContainer({showSrc, setShowSrc, chat, user}) {
                             <form className={'search-form'} onSubmit={handleSearchSubmit}>
                                 <input className={'message-search-input'} type="text"
                                        placeholder={'Mesajlarda Aratın'}
+                                       value={messageSearchInput}
                                        onChange={(e) => {
                                            (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
                                            setMessageSearchInput(e.target.value)
@@ -52,7 +58,7 @@ function SearchMessageContainer({showSrc, setShowSrc, chat, user}) {
 
                         { searching &&
                             filteredMessages?.map((x) => {
-                               return <FilteredMessages message={x.message} input={messageSearchInput}/>
+                               return <FilteredMessages messageObj={x} input={messageSearchInput}/>
                             })
                         }
 

@@ -2,19 +2,14 @@ import React, {useEffect, useState} from 'react';
 import '../CSS/connection.css';
 import useSelectUser from "../stores/useSelectUser";
 import { getUserData } from "../firebase";
-import useConnections from "../stores/useConnections";
 import LatestMessages from "./latestMessages";
-import usePrevMessageSendedDay from "../stores/usePrevMessageSendedDay";
 
 function Connections({userId, userData}) {
     const [userDetail, setUserDetail] = useState(null);
     const [notification, setNotification] = useState(false);
     const [test, setTest] = useState('');
-    const connections = useConnections(state => state.connections_)
-    const setConnections = useConnections(state => state.setConnections)
     const setSelectedUser = useSelectUser(state => state.setUser);
     const selectedUser = useSelectUser(state => state.user);
-    const setPrevMessageSendedDay_ = usePrevMessageSendedDay(state => state.setPrevMessageSendedDay);
 
 
     useEffect(() => {
@@ -34,7 +29,6 @@ function Connections({userId, userData}) {
     }
 
     const handleClick = () => {
-        setPrevMessageSendedDay_(null)
         setSelectedUser(userDetail);
         setNotification(false)
     }

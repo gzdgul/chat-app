@@ -1,34 +1,35 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import useSelectMessage from "../stores/useSelectMessage";
 
-function FilteredMessages({message, input}) {
+function FilteredMessages({messageObj, input}) {
     const setSelectedMessage = useSelectMessage(state => state.setSelectedMessage);
-
-
+    const message = messageObj.message
+    const date = new Date(messageObj.date).toLocaleDateString()
     const parts = [];
     let i = 0;
 
     while (i < message.length) {
-        const selamIndex = message.indexOf(input, i);
-        if (selamIndex === -1) {
+        const Index = message.indexOf(input, i);
+        if (Index === -1) {
             parts.push(message.substring(i));
             break;
         }
-        parts.push(message.substring(i, selamIndex));
+        parts.push(message.substring(i, Index));
         parts.push(
-            <span style={{ color: 'red' }}>{message.substring(selamIndex, selamIndex + input.length)}</span>
+            <span style={{ color: 'red' }}>{message.substring(Index, Index + input.length)}</span>
         );
-        i = selamIndex + input.length;
+        i = Index + input.length;
     }
 
     const handleClick = (e) => {
-        alert(e.target.innerText)
-        setSelectedMessage(e.target.innerText)
+        // alert(e.target.innerText)
+        setSelectedMessage(e.target.textContent)
     }
 
     return (
         <div className={'filtered-message'} onClick={handleClick}>
-            <div>{parts}</div>
+            <div className={'message'}>{parts}</div>
+            <div className={'date'}>{date}</div>
         </div>
     );
 }

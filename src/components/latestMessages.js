@@ -10,23 +10,22 @@ function LatestMessages({UID, place, createNotification}) {
     });
     const [LatestConnection_,setLatestConnection_] = useState(null)
     const sortConnectionsList = useConnections(state => state.sortConnections);
+    const setConnectionsList = useConnections(state => state.setConnections);
     const reporterBird = reporter(state => state.reporter); //HABERCİ KUŞ
 
 
     useEffect(() => {
         getLatestMessages()
             .then((res) => {
-                let arr = [];
-                res.forEach((x) => {
-                    const dateObj = new Date(x.date);
-                    arr.push(dateObj)
+                res = res.sort((a,b) => {
+                    const a_date = new Date(a.date);
+                    const b_date = new Date(b.date);
+                    return b_date - a_date;
                 })
-                arr.sort((a,b) => b-a)
-
-                const LatestConnection = res.find(x => new Date(x.date).getTime() === arr[0].getTime())
+                const LatestConnection = res[0]
                 setLatestConnection_(LatestConnection)
                 createNotification(LatestConnection)
-                sortConnectionsList(LatestConnection.recieverID)
+                setConnectionsList(res.map(x => x.recieverID))
 
                 const ConnectionLatest = res.find(x => x.recieverID === UID)
                 const dateObj = new Date(ConnectionLatest.date);

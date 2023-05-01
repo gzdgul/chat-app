@@ -54,27 +54,23 @@ function Chat(props) {
     },[]);
 
     useEffect(() => {
-        if (selectedUser !== null) {
-            listenMessage((snapshot) => {
-                let result = snapshotToArray(snapshot);
-                if (result) {
+        listenMessage((snapshot) => {
+            let result = snapshotToArray(snapshot);
+            if (result) {
+                if (selectedUser !== null) {
                     result = result.filter(x =>
                         (x.senderUserId === getAuth().currentUser.uid && x.recieverUserId === selectedUser.userID) ||
                         (x.recieverUserId === getAuth().currentUser.uid && x.senderUserId === selectedUser.userID)
                     )
+                    setChat(result);
+                    setChatOrj(result);
+                } else {
+                    setChat(result);
+                    setChatOrj(result);
                 }
                 setReporterBird();
-                setChat(result);
-                setChatOrj(result);
-            });
-        }
-        else {
-            listenMessage((snapshot) => { ///////////////!!!!!!!!!
-                snapshotToArray(snapshot);
-            });
-            setReporterBird();
-        }
-
+            }
+        });
     }, [selectedUser])
 
     const handleSearchSubmit = (e) => {
@@ -88,7 +84,7 @@ function Chat(props) {
 
     useEffect(() => {
         if (selectedMessage) {
-            const messageElems = chatDiv.current.querySelectorAll('.chat-bubble');
+            const messageElems = chatDiv.current.querySelectorAll('.chat-bubble, .chat-bubble-long');
             messageElems.forEach((elem) => {
                 if (elem.textContent.includes(selectedMessage)) {
                     elem.scrollIntoView({ behavior: 'smooth' });
@@ -100,7 +96,6 @@ function Chat(props) {
     const handleMessageSubmit = async (e) => { ////////////////// SEND MESSAGE
         e.preventDefault();
         if (currentMessage.length > 0 && selectedUser !== null) {
-            sendMessage(selectedUser.userID, currentMessage)
             //////////////////////////mesaj atıldığında bağlantı oluştur CROSS
             if (!connections_.includes(selectedUser.userID)) {
                 updateUserConnections(getAuth().currentUser.uid, selectedUser.userID).then(()  => {
@@ -112,9 +107,10 @@ function Chat(props) {
             if (!selectedUser.connections.includes(getAuth().currentUser.uid)) {
                 await updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
             }
-            setCurrentMessage('')
             await setLatestMessages(selectedUser.userID,currentMessage)
             updateLatestConnection(selectedUser.userID)
+            sendMessage(selectedUser.userID, currentMessage)
+            setCurrentMessage('')
             setReporterBird()
         }
         if (selectedUser === null && otoMessageCounter.length < 10) {
@@ -209,7 +205,6 @@ function Chat(props) {
                                               placeholder={'Aratın veya yeni bir sohbet başlatın'}
                                               onChange={(e) => {
                                                   (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
-                                                  setConnectionSearchInput(e.target.value)
                                                   setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
                                               } }
                                        />
@@ -282,7 +277,11 @@ function Chat(props) {
                                />
                            </form>
                        </div>
-                       <div className={'upload-photo-icon'}>📎</div>
+                       <div className={'upload-file'}>
+                           <div className={'upload-file-icon'}>📎</div>
+                           {/*<input type="file" id="myFile"/>*/}
+                       </div>
+
                        <div className={'send-button'} onClick={handleMessageSubmit}>Send</div>
                    </div>
                </div>
