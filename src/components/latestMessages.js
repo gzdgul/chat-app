@@ -14,6 +14,7 @@ function LatestMessages({UID, place, createNotification}) {
     const reporterBird = reporter(state => state.reporter); //HABERCİ KUŞ
 
 
+
     useEffect(() => {
         getLatestMessages()
             .then((res) => {
@@ -23,9 +24,11 @@ function LatestMessages({UID, place, createNotification}) {
                     return b_date - a_date;
                 })
                 const LatestConnection = res[0]
+
                 setLatestConnection_(LatestConnection)
                 createNotification(LatestConnection)
                 setConnectionsList(res.map(x => x.recieverID))
+                console.log('----------TEST----------------')
 
                 const ConnectionLatest = res.find(x => x.recieverID === UID)
                 const dateObj = new Date(ConnectionLatest.date);

@@ -79,6 +79,42 @@ export const setLatestMessages = async (recieverUID, latestMessage) => {
 
 }
 
+export const setUnreadMessages = async (recieverUID,message,option) => {
+    // await setDoc(doc(db, "users", recieverUID, "UnreadMessages", auth.currentUser.uid), {
+    //     message: messageObj.message,
+    //     recieverID: messageObj.recieverID,
+    //     sender: messageObj.sender,
+    //     date : messageObj.date
+    // });
+    if (!option) {
+        return await setDoc(doc(db, "users", recieverUID, "unreadMessages", auth.currentUser.uid), {
+            message: message,
+            recieverID: auth.currentUser.uid,
+            sender: 'reciever',
+            date :  new Date().toISOString()
+        });
+    }
+    if (option === 'delete') {
+        return await setDoc(doc(db, "users", auth.currentUser.uid, "unreadMessages", recieverUID), {
+            message: null,
+            recieverID: null,
+            sender: null,
+            date : null
+        });
+    }
+
+
+}
+
+export const getUnreadMessages = async () => {
+    const messageDocRef = query(collection(db, "users", auth.currentUser.uid, "unreadMessages"));
+    const messageDocSnap = await getDocs(messageDocRef);
+    if (!messageDocSnap.empty) {
+        return firestoreToArray(messageDocSnap);
+    } else {
+        return [];
+    }
+}
 export const getLatestMessages = async () => {
     const messageDocRef = query(collection(db, "users", auth.currentUser.uid, "latestMessages"));
     const messageDocSnap = await getDocs(messageDocRef);
@@ -143,6 +179,27 @@ export const sendMessage = (recieverUserId, message) => {
     //     userID: auth.currentUser.uid,
     //     message: message
     // });
+}
+export const sendBOTMessage = (recieverUserId, message) => {
+    push(chatsDatabaseRef, {
+        'senderUserId': 'Vd8vr3gobBUrFYt796Wjb5dmzlM2',
+        'recieverUserId': recieverUserId,
+        'message': message,
+        'date': new Date().toISOString()
+    })
+    // const { chatData } = setDoc(doc(db, "chats", auth.currentUser.uid, recieverUserId), {
+    //     userID: auth.currentUser.uid,
+    //     message: message
+    // });
+}
+export const setBOTMessageLTS = async (recieverUID, message) => {
+    return  setDoc(doc(db, "users", recieverUID, "latestMessages", 'Vd8vr3gobBUrFYt796Wjb5dmzlM2'), {
+        message: message,
+        recieverID: 'Vd8vr3gobBUrFYt796Wjb5dmzlM2',
+        sender: 'reciever',
+        date : new Date().toISOString()
+    });
+
 }
 
 export const listenMessage = (snapshotFunc) => {

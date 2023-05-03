@@ -4,8 +4,8 @@ import Connections from "../components/connections";
 import {
     getAllUserData, getLatestMessages,
     getUserData,
-    listenMessage,
-    sendMessage, setLatestConnection, setLatestMessages,
+    listenMessage, sendBOTMessage,
+    sendMessage, setBOTMessageLTS, setLatestConnection, setLatestMessages, setUnreadMessages,
     snapshotToArray, updateLatestConnection,
     updateUserConnections
 } from "../firebase";
@@ -65,7 +65,7 @@ function Chat(props) {
                     setChat(result);
                     setChatOrj(result);
                 } else {
-                    setChat(result);
+                    // setChat(result);
                     setChatOrj(result);
                 }
                 setReporterBird();
@@ -108,10 +108,16 @@ function Chat(props) {
                 await updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
             }
             await setLatestMessages(selectedUser.userID,currentMessage)
-            updateLatestConnection(selectedUser.userID)
+             updateLatestConnection(selectedUser.userID)
+             setUnreadMessages(selectedUser.userID,currentMessage)
             sendMessage(selectedUser.userID, currentMessage)
             setCurrentMessage('')
             setReporterBird()
+            // setTimeout(() => {
+            //     // sendBOTMessage(selectedUser.userID,'KATCHA-BOT')
+            //     setBOTMessageLTS(selectedUser.userID, 'KATCHA-BOT')
+            // },500)
+
         }
         if (selectedUser === null && otoMessageCounter.length < 10) {
             setOtoMessageCounter([...otoMessageCounter, '2'])
