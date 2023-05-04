@@ -8,7 +8,7 @@ import {
     updateProfile
 } from "firebase/auth";
 import {arrayUnion, collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc} from "firebase/firestore";
-import {getDatabase, onValue, push, ref} from "firebase/database";
+import {getDatabase, onValue, push, ref, set} from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -26,13 +26,14 @@ const auth = getAuth();
 const db = getFirestore();
 const database = getDatabase(app);
 const chatsDatabaseRef = ref(database, 'chats');
+const realtimeTypingDataRef = ref(database, 'typing');
 
 
 export const getUserData = async (userID) => {
     const usersDocRef = doc(db, "users", userID);
     const usersDocSnap = await getDoc(usersDocRef);
     if (usersDocSnap.exists()) {
-        console.log("user data:", usersDocSnap.data());
+        // console.log("user data:", usersDocSnap.data());
         return usersDocSnap.data()
     } else {
         console.log("No such document!");
@@ -180,6 +181,22 @@ export const sendMessage = (recieverUserId, message) => {
     //     message: message
     // });
 }
+export const setTyping = async (recieverUserId, status) => {
+    return await set(realtimeTypingDataRef, {
+        'typerID': auth.currentUser.uid,
+        'recieverID': recieverUserId,
+        'status': status,
+    })
+    // const { chatData } = setDoc(doc(db, "chats", auth.currentUser.uid, recieverUserId), {
+    //     userID: auth.currentUser.uid,
+    //     message: message
+    // });
+}
+
+export const listenTyping = (snapshotFunc) => {
+    onValue(chatsDatabaseRef, snapshotFunc);
+};
+
 export const sendBOTMessage = (recieverUserId, message) => {
     push(chatsDatabaseRef, {
         'senderUserId': 'Vd8vr3gobBUrFYt796Wjb5dmzlM2',
@@ -213,7 +230,7 @@ export const snapshotToArray = (snapshot) => {
         item.key = childSnapshot.key;
         result.push(item);
     });
-    console.log('FULL',result)
+    // console.log('FULL',result)
     return result;
 }
 

@@ -5,7 +5,7 @@ import {
     getAllUserData, getLatestMessages,
     getUserData,
     listenMessage, sendBOTMessage,
-    sendMessage, setBOTMessageLTS, setLatestConnection, setLatestMessages, setUnreadMessages,
+    sendMessage, setBOTMessageLTS, setLatestConnection, setLatestMessages, setTyping, setUnreadMessages,
     snapshotToArray, updateLatestConnection,
     updateUserConnections
 } from "../firebase";
@@ -113,10 +113,10 @@ function Chat(props) {
             sendMessage(selectedUser.userID, currentMessage)
             setCurrentMessage('')
             setReporterBird()
-            // setTimeout(() => {
-            //     // sendBOTMessage(selectedUser.userID,'KATCHA-BOT')
-            //     setBOTMessageLTS(selectedUser.userID, 'KATCHA-BOT')
-            // },500)
+            setTimeout(() => {
+                // sendBOTMessage(selectedUser.userID,'KATCHA-BOT')
+                setBOTMessageLTS(selectedUser.userID, 'KATCHA-BOT')
+            },500)
 
         }
         if (selectedUser === null && otoMessageCounter.length < 10) {
@@ -124,6 +124,23 @@ function Chat(props) {
         }
 
     }
+
+    useEffect(() => {
+        setTimeout(() => {
+            setTyping(selectedUser.userID, true)
+
+        },1000)
+
+
+        const message = currentMessage
+       setTimeout(() => {
+           const message2 = currentMessage
+       },5000)
+        if (currentMessage === message) {
+            setTyping(selectedUser.userID, false)
+        }
+
+    },[currentMessage])
 
     const userInfoToggle = () => {
         (showSearchContainer === true) && setShowSearchContainer(!showSearchContainer)
@@ -252,8 +269,8 @@ function Chat(props) {
                        <div className={'chat-start'}></div>
                        {
                           (selectedUser === null ) &&
-                           otoMessageCounter.map((x) => {
-                               return  <Messages message ={x} date={new Date()} sender='oto' />
+                           otoMessageCounter.map((x,i) => {
+                               return  <Messages message ={x} date={new Date()} sender='oto' key={i} />
                            })
                        }
 
@@ -266,8 +283,8 @@ function Chat(props) {
                                        { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
                                        {
                                            (messageObj.senderUserId === getAuth().currentUser.uid)
-                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' />
-                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' />
+                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' key={index} />
+                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' key={index}/>
                                        }
                                    </>
                                )
@@ -279,7 +296,12 @@ function Chat(props) {
                            <form className={'testtt'} onSubmit={handleMessageSubmit}>
                                <input className={'message-input'} type="text" placeholder={'Bir mesaj yazın.'}
                                       value={currentMessage}
-                                      onChange={(e) => setCurrentMessage(e.target.value) }
+                                      onChange={(e) => {
+                                          setCurrentMessage(e.target.value)
+
+
+                                      }
+                               }
                                />
                            </form>
                        </div>

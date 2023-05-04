@@ -31,11 +31,8 @@ function Connections({userId, userData}) {
     useEffect(() => {
         getUnreadMessages().then((res) => {
             setUnreadMessagesList(res)
+            setUnreadConnection(res.find((x) => x.recieverID === userDetail?.userID)) //user unreadMes datasında ki bu kişiyi bul
 
-                setUnreadConnection(res.find((x) => x.recieverID === userDetail.userID)) //user unreadMes datasında ki bu kişiyi bul
-
-
-            console.log('UNREADD',res)
         })
     },[LatestMessageUser])
     const createNotification = async (LatestConnection) => {
