@@ -184,10 +184,10 @@ function Chat(props) {
             setDarkMode(false);
         }
         else {
-            document.documentElement.style.setProperty('--purple', '#fdfdfd');
-            document.documentElement.style.setProperty('--pink', '#e02962');
-            document.documentElement.style.setProperty('--white', '#2f2d5b');
-            document.documentElement.style.setProperty('--gray', '#1e1c3d');
+            document.documentElement.style.setProperty('--purple', '#b2b4ff');
+            document.documentElement.style.setProperty('--pink', '#fd014f');
+            document.documentElement.style.setProperty('--white', '#161526');
+            document.documentElement.style.setProperty('--gray', '#0f0f15');
             document.documentElement.style.setProperty('--black', '#fdfdfd');
             setDarkMode(true);
         }
