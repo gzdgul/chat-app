@@ -63,7 +63,7 @@ function Chat(props) {
         listenMessage((snapshot) => {
             let result = snapshotToArray(snapshot);
             if (result) {
-                if (selectedUser !== null) {
+                if (selectedUser && selectedUser.userID) {
                     result = result.filter(x =>
                         (x.senderUserId === getAuth().currentUser.uid && x.recieverUserId === selectedUser.userID) ||
                         (x.recieverUserId === getAuth().currentUser.uid && x.senderUserId === selectedUser.userID)
@@ -141,7 +141,7 @@ function Chat(props) {
             setReporterBird()
             setTimeout(() => {
                 // sendBOTMessage(selectedUser.userID,'KATCHA-BOT')
-                setBOTMessageLTS(selectedUser.userID, 'KATCHA-BOT')
+                // setBOTMessageLTS(selectedUser.userID, 'KATCHA-BOT')
             },500)
 
         }
@@ -152,15 +152,15 @@ function Chat(props) {
     }
 // setTyping(selectedUser?.userID, true)
     useEffect(() => {
-        setTyping(selectedUser?.userID, true)
-
-        const timeoutId = setTimeout(() => {
-            setTyping(selectedUser?.userID, false)
-        }, 1000);
-
-        return () => {
-            clearTimeout(timeoutId);
-        };
+        if (selectedUser && selectedUser.userID) {
+            setTyping(selectedUser.userID, true)
+            const timeoutId = setTimeout(() => {
+                setTyping(selectedUser.userID, false)
+            }, 1000);
+            return () => {
+                clearTimeout(timeoutId);
+            };
+        }
     }, [currentMessage]);
 
     const userInfoToggle = () => {
@@ -290,7 +290,7 @@ function Chat(props) {
                        {
                           (selectedUser === null ) &&
                            otoMessageCounter.map((x,i) => {
-                               return  <Messages message ={x} date={new Date()} sender='oto' key={i} />
+                               return  <Messages message ={x} date={new Date()} sender='oto' key={'OTO_' + i} />
                            })
                        }
 
@@ -303,8 +303,8 @@ function Chat(props) {
                                        { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
                                        {
                                            (messageObj.senderUserId === getAuth().currentUser.uid)
-                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' key={index} />
-                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' key={index}/>
+                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' key={'ME_' + index} />
+                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' key={'FRIEND_' + index}/>
                                        }
                                    </>
                                )

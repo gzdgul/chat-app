@@ -50,7 +50,7 @@ function Connections({userId, userData}) {
 
     const createNotification = async (LatestConnection) => {
         setLatestMessageUser(LatestConnection)
-        if (selectedUser.userID === userDetail.userID) {
+        if (selectedUser?.userID === userDetail.userID) {
             setUnreadConnection(false)
             await setUnreadMessages(userDetail.userID,null,'delete')
         }
@@ -81,11 +81,11 @@ function Connections({userId, userData}) {
                             ? <span style={{
                                 color: "red"
                             }}>yazıyor...</span>
-                            : <LatestMessages UID = {userDetail.userID} place = {'index'} createNotification = {createNotification}/>}
+                            : <LatestMessages key={'LAST_MESSAGE_' + userDetail.userID} UID = {userDetail.userID} place = {'index'} createNotification = {createNotification}/>}
                     </div>
                 </div>
 
-                <div className={'connection-date'}>{<LatestMessages UID = {userDetail.userID} place = {'date'} createNotification = {createNotification}/>}
+                <div className={'connection-date'}>{<LatestMessages  key={'LAST_MESSAGE_DATE_' + userDetail.userID} UID = {userDetail.userID} place = {'date'} createNotification = {createNotification}/>}
                     { unreadConnection &&
                         <div className={'notification-alert'}></div>
                     }</div>

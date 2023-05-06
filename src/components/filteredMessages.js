@@ -4,7 +4,7 @@ import useSelectMessage from "../stores/useSelectMessage";
 function FilteredMessages({messageObj, input}) {
     const setSelectedMessage = useSelectMessage(state => state.setSelectedMessage);
     const message = messageObj.message
-    const date = new Date(messageObj.date).toLocaleDateString()
+    const date = new Date(messageObj.date)
     const parts = [];
     let i = 0;
 
@@ -29,7 +29,7 @@ function FilteredMessages({messageObj, input}) {
     return (
         <div className={'filtered-message'} onClick={handleClick}>
             <div className={'message'}>{parts}</div>
-            <div className={'date'}>{date}</div>
+            <div className={'date'}>{date.toLocaleString()}</div>
         </div>
     );
 }

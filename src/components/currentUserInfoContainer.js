@@ -16,14 +16,10 @@ function CurrentUserInfoContainer({showCurrUserInf, setShowCurrUserInf, user}) {
     }, [showCurrUserInf]);
 
     const handleSubmit = async (e) => {
-        // e.preventDefault()
-        try {
-            const userDisplayName = await updateDisplayName(displayName)
-            console.log(userDisplayName)
-        }catch (err) {
-            console.log(err)
-
-        }
+        e.preventDefault()
+        await updateDisplayName(displayName).then(() => {
+            window.location.reload()
+        })
     }
     const handleEditDisplayName = async () => {
         if (editMode === true) {

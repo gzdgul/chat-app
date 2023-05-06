@@ -58,9 +58,9 @@ export const setUserData = async (displayName, email,avatarLink) => {
         userID: auth.currentUser.uid,
         displayName: displayName,
         email: email,
-        connections: [],
+        connections: ['Vd8vr3gobBUrFYt796Wjb5dmzlM2'],
         avatarLink: avatarLink,
-        latestConnection: null
+        latestConnection: 'Vd8vr3gobBUrFYt796Wjb5dmzlM2'
     });
     return userdata;
 }
@@ -139,15 +139,21 @@ export const updateLatestConnection = async  (recieverID) => {
         latestConnection: recieverID
     });
 }
-export const updateDisplayName = async  (displayName) => {
-    const { user } = await updateProfile(auth.currentUser, {
+export const updateDisplayName = async (displayName) => {
+    await updateProfile(getAuth().currentUser, {
         displayName: displayName
     })
-    return user
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    await updateDoc(userRef, {
+        displayName: displayName
+    })
 }
 
 export const register = async (email, password) => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password)
+    const welcome_text = 'TEST 123'
+    await sendBOTMessage(user.uid, welcome_text)
+    await setBOTMessageLTS(user.uid, welcome_text)
     return user
 }
 

@@ -57,7 +57,7 @@ function SearchMessageContainer({showSrc, setShowSrc, chat, user}) {
                     <div className={'filtered-message-container'}>
 
                         { searching &&
-                            filteredMessages?.map((x) => {
+                            filteredMessages?.reverse().map((x) => {
                                return <FilteredMessages messageObj={x} input={messageSearchInput}/>
                             })
                         }
