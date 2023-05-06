@@ -16,7 +16,7 @@ function FilteredMessages({messageObj, input}) {
         }
         parts.push(message.substring(i, Index));
         parts.push(
-            <span style={{ color: 'red' }}>{message.substring(Index, Index + input.length)}</span>
+            <span style={{ color: 'var(--pink)' }}>{message.substring(Index, Index + input.length)}</span>
         );
         i = Index + input.length;
     }

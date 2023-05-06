@@ -213,25 +213,24 @@ function Chat(props) {
                        <div className={'chat-logo'}></div>
                    </div>
                    <CurrentUserInfoContainer showCurrUserInf={showCurrInfoContainer} setShowCurrUserInf={setShowCurrInfoContainer} user={currentUserData}/>
+                   <label className={'chat-label'}>Chat</label>
                    {
-                       <>
-                           <div className={'search'}>
-                               <div className={'search-bar'}>
-                                   <div className={'search-icon'}><i className="fa fa-search"></i></div>
-                                   <form className={'search-form'} onSubmit={handleSearchSubmit}>
-                                       <input className={'connection-search-input'} type="text"
-                                              placeholder={'Aratın veya yeni bir sohbet başlatın'}
-                                              onChange={(e) => {
-                                                  (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
-                                                  setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
-                                              } }
-                                       />
-
-                                   </form>
-                               </div>
-
-                           </div>
                            <div className={'connections'}>
+                               <div className={'search'}>
+                                   <div className={'search-bar'}>
+                                       <div className={'search-icon'}><i className="fa fa-search"></i></div>
+                                       <form className={'search-form'} onSubmit={handleSearchSubmit}>
+                                           <input className={'connection-search-input'} type="text"
+                                                  placeholder={'Aratın veya yeni bir sohbet başlatın'}
+                                                  onChange={(e) => {
+                                                      (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
+                                                      setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
+                                                  } }
+                                           />
+
+                                       </form>
+                                   </div>
+                               </div>
                                { searching &&
                                    filteredUserData.map((x) => {
                                        return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID} userData={x}  />
@@ -243,7 +242,7 @@ function Chat(props) {
                                    })
                                }
                            </div>
-                       </>
+
                    }
                </div>
                <div className={'chat-area-container'}>

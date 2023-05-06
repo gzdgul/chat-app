@@ -74,7 +74,7 @@ function Connections({userId, userData}) {
                 <div className={'connection-info'}>
                     <div className={'connection-title'}>
                         {userDetail.displayName}
-                        <span style={{color: '#ef3933'}}> {userData ? `(${userData.email})` : ''}</span>
+                        <span style={{color: 'var(--pink)'}}> {userData ? `(${userData.email})` : ''}</span>
                     </div>
                     <div className={'connection-index'}>
                         { isTyping
