@@ -4,7 +4,7 @@ import Connections from "../components/connections";
 import {
     getAllUserData, getLatestMessages,
     getUserData,
-    listenMessage, sendBOTMessage,
+    listenMessage, listenTyping, sendBOTMessage,
     sendMessage, setBOTMessageLTS, setLatestConnection, setLatestMessages, setTyping, setUnreadMessages,
     snapshotToArray, updateLatestConnection,
     updateUserConnections
@@ -19,6 +19,7 @@ import InfoContainer from "../components/infoContainer";
 import SearchMessageContainer from "../components/searchMessageContainer";
 import CurrentUserInfoContainer from "../components/currentUserInfoContainer";
 import useSelectMessage from "../stores/useSelectMessage";
+import useTypingUsers from "../stores/useTypingUsers";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
@@ -31,12 +32,15 @@ function Chat(props) {
     const [currentUserData, setCurrentUserData] = useState([])
     const [filteredUserData, setFilteredUserData] = useState([])
     const [searching, setSearching] = useState(false)
+    const [isTyping, setIsTyping] = useState(false)
     const selectedUser = useSelectUser(state => state.user);
     const selectedMessage = useSelectMessage(state => state.selectedMessage);
     const setSelectedUser = useSelectUser(state => state.setUser);
     const connections_ = useConnections(state => state.connections_);
     const setConnections = useConnections(state => state.setConnections);
     const setLatestMessage = useLatestMessage(state => state.setMessage);
+    const setTypingUsers = useTypingUsers(state => state.setTypingUsers);
+    const typingUsers = useTypingUsers(state => state.typingUsers);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
     const [chatOrj, setChatOrj] = useState([]);
     const [chat, setChat] = useState([]);
@@ -51,6 +55,7 @@ function Chat(props) {
             (latestConnID !== null) && getUserData(latestConnID).then((response) => setSelectedUser(response))
 
         });
+
     },[]);
 
     useEffect(() => {
@@ -71,7 +76,27 @@ function Chat(props) {
                 setReporterBird();
             }
         });
+
     }, [selectedUser])
+
+    useEffect(() => {
+        listenTyping( (snapshot) => {
+            let result = snapshotToArray(snapshot);
+            console.log('result',result)
+            result.forEach((x) => {
+                setTypingUsers(x)
+                console.log('GOZDEEE',x)
+
+            })
+
+        })
+
+    },[])
+
+    useEffect(() => {  ///CHATTEKİ TYPING YAZISI İÇİN
+        const user = typingUsers?.find((y) => y.typerID === selectedUser?.userID)
+        setIsTyping(user?.status)
+    },[typingUsers])
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -124,23 +149,18 @@ function Chat(props) {
         }
 
     }
-
+// setTyping(selectedUser?.userID, true)
     useEffect(() => {
-        setTimeout(() => {
-            setTyping(selectedUser.userID, true)
+        setTyping(selectedUser?.userID, true)
 
-        },1000)
+        const timeoutId = setTimeout(() => {
+            setTyping(selectedUser?.userID, false)
+        }, 1000);
 
-
-        const message = currentMessage
-       setTimeout(() => {
-           const message2 = currentMessage
-       },5000)
-        if (currentMessage === message) {
-            setTyping(selectedUser.userID, false)
-        }
-
-    },[currentMessage])
+        return () => {
+            clearTimeout(timeoutId);
+        };
+    }, [currentMessage]);
 
     const userInfoToggle = () => {
         (showSearchContainer === true) && setShowSearchContainer(!showSearchContainer)
@@ -154,31 +174,6 @@ function Chat(props) {
         setShowSearchContainer(!showSearchContainer)
     }
 
-    // const sabitlenenElemanRef = useRef(null);
-    // const sabitlenenElemanPozisyon = useRef(null);
-    //
-    // useEffect(() => {
-    //     if (sabitlenenElemanRef.current) {
-    //         sabitlenenElemanPozisyon.current = sabitlenenElemanRef.current.getBoundingClientRect();
-    //     }
-    // }, [sabitlenenElemanRef.current]);
-    //
-    //
-    // useEffect(() => {
-    //     function handleScroll() {
-    //         if (sabitlenenElemanRef.current) {
-    //             const pozisyon = sabitlenenElemanRef.current.getBoundingClientRect();
-    //             if (pozisyon.top >= 0 && pozisyon.bottom <= window.innerHeight) {
-    //                 sabitlenenElemanRef.current.style.position = "sticky";
-    //                 sabitlenenElemanRef.current.style.top = "0";
-    //             } else {
-    //                 sabitlenenElemanRef.current.style.position = "static";
-    //             }
-    //         }
-    //     }
-    //     // chatDiv.addEventListener("scroll", handleScroll);
-    //     // return () => chatDiv.removeEventListener("scroll", handleScroll);
-    // }, []);
 
     const checkDate = (curr, prev) => {
         const curr_date = new Date(curr.date);
@@ -257,7 +252,14 @@ function Chat(props) {
                            {selectedUser &&
                                <div className={'friend-logo'}><img src={selectedUser?.avatarLink} alt="avatar"/></div>
                            }
-                           <div className={'friend-name'}>{selectedUser?.displayName}</div>
+                           <div className={'friend-name'}>{selectedUser?.displayName}
+                               {
+                                   isTyping
+                                       ? <span className={'typing'}>yazıyor...</span>
+                                       : <span className={'online'}>online</span>
+                               }
+                           </div>
+
                        </div>
 
                        <div className={'chat-options'}>

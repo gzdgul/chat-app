@@ -182,19 +182,23 @@ export const sendMessage = (recieverUserId, message) => {
     // });
 }
 export const setTyping = async (recieverUserId, status) => {
-    return await set(realtimeTypingDataRef, {
+    return await set(ref(database, 'typing/' + recieverUserId + '/ '+ auth.currentUser.uid), {
         'typerID': auth.currentUser.uid,
         'recieverID': recieverUserId,
         'status': status,
     })
+
     // const { chatData } = setDoc(doc(db, "chats", auth.currentUser.uid, recieverUserId), {
     //     userID: auth.currentUser.uid,
     //     message: message
     // });
 }
 
+
 export const listenTyping = (snapshotFunc) => {
-    onValue(chatsDatabaseRef, snapshotFunc);
+   setTimeout(() => {
+       onValue(ref(database, 'typing/' + auth.currentUser.uid ), snapshotFunc);
+   },3000)
 };
 
 export const sendBOTMessage = (recieverUserId, message) => {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getLatestMessages} from "../firebase";
+import {getLatestMessages, listenTyping} from "../firebase";
 import reporter from "../stores/reporter";
 import useConnections from "../stores/useConnections";
 

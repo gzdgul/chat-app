@@ -1,20 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import '../CSS/connection.css';
 import useSelectUser from "../stores/useSelectUser";
-import {getUnreadMessages, getUserData, setUnreadMessages} from "../firebase";
+import {getUnreadMessages, getUserData, listenTyping, setUnreadMessages, snapshotToArray} from "../firebase";
 import LatestMessages from "./latestMessages";
 import useNotificationList from "../stores/useNotificationList";
+import reporter from "../stores/reporter";
+import useTypingUsers from "../stores/useTypingUsers";
 
 function Connections({userId, userData}) {
     const [userDetail, setUserDetail] = useState(null);
     const [LatestMessageUser, setLatestMessageUser] = useState('');
     const [unreadMessagesList, setUnreadMessagesList] = useState([]);
     const [unreadConnection, setUnreadConnection] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
     const setSelectedUser = useSelectUser(state => state.setUser);
     const selectedUser = useSelectUser(state => state.user);
     const addUserToNotificationList = useNotificationList(state => state.addNotificationList);
     const removeUserToNotificationList = useNotificationList(state => state.removeNotificationList);
     const notificationList = useNotificationList(state => state.notificationList);
+    const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
+    const typingUsers = useTypingUsers(state => state.typingUsers);
+
 
     // const fetchUnreadMessages = async () => {
     //     return await getUnreadMessages()
@@ -29,12 +35,19 @@ function Connections({userId, userData}) {
     }, [])
 
     useEffect(() => {
+        const user = typingUsers.find((x) => x.typerID === userId)
+            setIsTyping(user?.status)
+    }, [typingUsers])
+
+    useEffect(() => {
         getUnreadMessages().then((res) => {
             setUnreadMessagesList(res)
             setUnreadConnection(res.find((x) => x.recieverID === userDetail?.userID)) //user unreadMes datasında ki bu kişiyi bul
-
         })
+
     },[LatestMessageUser])
+
+
     const createNotification = async (LatestConnection) => {
         setLatestMessageUser(LatestConnection)
         if (selectedUser.userID === userDetail.userID) {
@@ -64,7 +77,12 @@ function Connections({userId, userData}) {
                         <span style={{color: '#ef3933'}}> {userData ? `(${userData.email})` : ''}</span>
                     </div>
                     <div className={'connection-index'}>
-                        {<LatestMessages UID = {userDetail.userID} place = {'index'} createNotification = {createNotification}/>}</div>
+                        { isTyping
+                            ? <span style={{
+                                color: "red"
+                            }}>yazıyor...</span>
+                            : <LatestMessages UID = {userDetail.userID} place = {'index'} createNotification = {createNotification}/>}
+                    </div>
                 </div>
 
                 <div className={'connection-date'}>{<LatestMessages UID = {userDetail.userID} place = {'date'} createNotification = {createNotification}/>}
