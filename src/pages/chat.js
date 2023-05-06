@@ -33,6 +33,7 @@ function Chat(props) {
     const [filteredUserData, setFilteredUserData] = useState([])
     const [searching, setSearching] = useState(false)
     const [isTyping, setIsTyping] = useState(false)
+    const [darkMode, setDarkMode] = useState(false)
     const selectedUser = useSelectUser(state => state.user);
     const selectedMessage = useSelectMessage(state => state.selectedMessage);
     const setSelectedUser = useSelectUser(state => state.setUser);
@@ -173,7 +174,24 @@ function Chat(props) {
         (showInfoContainer === true) && setShowInfoContainer(!showInfoContainer)
         setShowSearchContainer(!showSearchContainer)
     }
-
+    const darkModeToggle = () => {
+        if (darkMode) {
+            document.documentElement.style.setProperty('--purple', '#5d49e1');
+            document.documentElement.style.setProperty('--pink', '#fd014f');
+            document.documentElement.style.setProperty('--white', '#fdfdfd');
+            document.documentElement.style.setProperty('--gray', '#eeedf3');
+            document.documentElement.style.setProperty('--black', '#161617');
+            setDarkMode(false);
+        }
+        else {
+            document.documentElement.style.setProperty('--purple', '#fdfdfd');
+            document.documentElement.style.setProperty('--pink', '#e02962');
+            document.documentElement.style.setProperty('--white', '#2f2d5b');
+            document.documentElement.style.setProperty('--gray', '#1e1c3d');
+            document.documentElement.style.setProperty('--black', '#fdfdfd');
+            setDarkMode(true);
+        }
+    }
 
     const checkDate = (curr, prev) => {
         const curr_date = new Date(curr.date);
@@ -203,6 +221,7 @@ function Chat(props) {
     }
     return (
         <div className={'screen screenChat'}>
+
            <div className={'chatContainer'}>
                <div className={'connections-container'}>
                    <div className={'header-connections'}>
@@ -316,6 +335,7 @@ function Chat(props) {
                </div>
                <SearchMessageContainer showSrc={showSearchContainer} setShowSrc={setShowSearchContainer} chat={chatOrj} user={selectedUser} />
                <InfoContainer showInf={showInfoContainer} setShowInf={setShowInfoContainer} user={selectedUser}/>
+               <button className={'dark-mode-button'} onClick={darkModeToggle}>dark mode</button>
            </div>
         </div>
     );
