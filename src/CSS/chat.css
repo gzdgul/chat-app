@@ -11,14 +11,18 @@
     flex-direction: row;
     align-items: stretch;
     justify-content: space-between;
-    width: 60%;
+    width: 100%;
+    max-width: 1600px;
     min-width: 700px;
     min-height: 700px;
     height: 96%;
+    margin: 20px 20px 20px 20px;
     box-shadow: 0 0 2px 2px var(--gray);
 }
 .screenChat {
     background-color: var(--gray);
+    min-width: 1300px;
+    min-height: 750px;
 }
 .connections-container {
     display: flex;

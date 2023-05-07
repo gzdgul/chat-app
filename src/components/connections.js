@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import '../CSS/connection.css';
 import useSelectUser from "../stores/useSelectUser";
 import {getUnreadMessages, getUserData, listenTyping, setUnreadMessages, snapshotToArray} from "../firebase";
@@ -20,11 +20,7 @@ function Connections({userId, userData}) {
     const notificationList = useNotificationList(state => state.notificationList);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
     const typingUsers = useTypingUsers(state => state.typingUsers);
-
-
-    // const fetchUnreadMessages = async () => {
-    //     return await getUnreadMessages()
-    // }
+    const connectionContainerRef = useRef(null)
 
 
     useEffect(() => {
@@ -58,6 +54,11 @@ function Connections({userId, userData}) {
 
     const handleClick = async () => {
         setSelectedUser(userDetail);
+        const elements = document.querySelectorAll(".selected");
+        elements.forEach((element) => {
+            element.className = "connectionBanner";
+        });
+        connectionContainerRef.current.className = 'selected'
         if (unreadConnection) {
             await setUnreadMessages(userDetail.userID,null,'delete')
         }
@@ -69,7 +70,7 @@ function Connections({userId, userData}) {
 
     return (
         <div id={userDetail.userID} onClick={handleClick}>
-            <div className={!(unreadConnection) ? 'connectionBanner' : 'connectionBanner notification'}>
+            <div className={!(unreadConnection) ? 'connectionBanner' : 'connectionBanner notification' } ref={connectionContainerRef}>
                 <div className={'connection-photo'}><img src={userDetail.avatarLink} alt="avatar"/></div>
                 <div className={'connection-info'}>
                     <div className={'connection-title'}>
