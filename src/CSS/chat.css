@@ -21,7 +21,7 @@
 }
 .screenChat {
     background-color: var(--gray);
-    min-width: 1300px;
+    min-width: 900px;
     min-height: 750px;
 }
 .connections-container {
@@ -39,7 +39,8 @@
 
 .chat-area-container {
     width: 70%;
-    min-width: 45%;
+    max-width: 70%;
+    min-width: 500px;
     background-color: var(--white);
     display: flex;
     flex-direction: column;
@@ -64,7 +65,9 @@
 
 .showInf {
     pointer-events: auto;
-    width: 40%;
+    /*max-width: 600px;*/
+    width: 100%;
+    min-height: 648px;
     opacity: 1;
     transition: width 0.3s, opacity 0.2s 0.2s;
 }
@@ -275,6 +278,7 @@
     align-items: center;
     justify-content: space-between;
     min-height: 53px;
+    margin-bottom: 20px;
     border-bottom: 1px solid var(--gray);
     background-color: var(--white);
     border-radius: 20px;
@@ -611,7 +615,8 @@
     cursor: pointer;
 }
 .upload-file-icon {
-position: absolute;
+    font-size: 1.6rem;
+    cursor: pointer;
 }
 .send-button {
     display: flex;
@@ -625,6 +630,7 @@ position: absolute;
     margin: 12px;
     cursor: pointer;
     border-radius: 20px;
+    font-size: 0.9rem;
 }
 
 .dark-mode-button {

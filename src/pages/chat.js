@@ -4,7 +4,7 @@ import Connections from "../components/connections";
 import {
     getAllUserData, getLatestMessages,
     getUserData,
-    listenMessage, listenTyping, sendBOTMessage,
+    listenMessage, listenTyping, sendBOTMessage, sendFiles,
     sendMessage, setBOTMessageLTS, setLatestConnection, setLatestMessages, setTyping, setUnreadMessages,
     snapshotToArray, updateLatestConnection,
     updateUserConnections
@@ -24,8 +24,10 @@ import useTypingUsers from "../stores/useTypingUsers";
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
     const [showInfoContainer, setShowInfoContainer] = useState(false)
+    const [showInfoContainerMedium, setShowInfoContainerMedium] = useState(false)
     const [showCurrInfoContainer, setShowCurrInfoContainer] = useState(false)
     const [showSearchContainer, setShowSearchContainer] = useState(false)
+    const [showSearchContainerMedium, setShowSearchContainerMedium] = useState(false)
     const [currentMessage, setCurrentMessage] = useState('')
     const [connectionSearchInput, setConnectionSearchInput] = useState('')
     const [allUserData, setAllUserData] = useState([])
@@ -106,6 +108,9 @@ function Chat(props) {
 
     useEffect(() => {
         chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
+        setTimeout(() => {
+            chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
+        },1000)
     }, [chat])
 
     useEffect(() => {
@@ -164,15 +169,62 @@ function Chat(props) {
     }, [currentMessage]);
 
     const userInfoToggle = () => {
-        (showSearchContainer === true) && setShowSearchContainer(!showSearchContainer)
-        setShowInfoContainer(!showInfoContainer)
+        let screenWidth = window.innerWidth;
+
+        if (screenWidth < 1300) {
+            // ekran genişliği 1300'den küçük olduğunda
+            (showCurrInfoContainer === true) && setShowCurrInfoContainer(!showCurrInfoContainer)
+            setShowInfoContainerMedium(!showInfoContainerMedium)
+            setShowCurrInfoContainer(false)
+            setShowSearchContainer(false)
+
+        } else {
+            // ekran genişliği 1300 veya daha büyük olduğunda
+            (showSearchContainer === true) && setShowSearchContainer(!showSearchContainer)
+            setShowInfoContainer(!showInfoContainer)
+        }
+
     }
     const currUserInfoToggle = () => {
+        (showInfoContainerMedium === true) && setShowInfoContainerMedium(!showInfoContainerMedium)
         setShowCurrInfoContainer(!showCurrInfoContainer)
     }
     const searchMessageToggle = () => {
-        (showInfoContainer === true) && setShowInfoContainer(!showInfoContainer)
-        setShowSearchContainer(!showSearchContainer)
+        let screenWidth = window.innerWidth;
+        if (screenWidth < 1300) {
+            // ekran genişliği 1300'den küçük olduğunda
+            (showCurrInfoContainer === true) && setShowCurrInfoContainer(!showCurrInfoContainer)
+            setShowSearchContainerMedium(!showSearchContainerMedium)
+            setShowCurrInfoContainer(false)
+            setShowSearchContainer(false)
+
+        } else {
+            // ekran genişliği 1300 veya daha büyük olduğunda
+            (showInfoContainer === true) && setShowInfoContainer(!showInfoContainer)
+            setShowSearchContainer(!showSearchContainer)
+        }
+
+    }
+
+    const handleFileSubmit = async (event) => {
+        event.preventDefault()
+        await sendFiles(event.currentTarget, selectedUser.userID)
+
+        if (!connections_.includes(selectedUser.userID)) {
+            updateUserConnections(getAuth().currentUser.uid, selectedUser.userID).then(()  => {
+                getUserData(getAuth().currentUser.uid).then((res) => {
+                    setConnections(res.connections);
+                })
+            })
+        }
+        if (!selectedUser.connections.includes(getAuth().currentUser.uid)) {
+            await updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
+        }
+        await setLatestMessages(selectedUser.userID, '☇ dosya')
+        updateLatestConnection(selectedUser.userID)
+        setUnreadMessages(selectedUser.userID, '☇ dosya')
+        setReporterBird()
+
     }
     const darkModeToggle = () => {
         if (darkMode) {
@@ -231,6 +283,16 @@ function Chat(props) {
                       </div>
                        <div className={'chat-logo'}></div>
                    </div>
+                   {
+                       showInfoContainerMedium &&
+                       <InfoContainer showInf={showInfoContainerMedium} setShowInf={setShowInfoContainerMedium} user={selectedUser}/>
+                       // <CurrentUserInfoContainer showCurrUserInf={showInfoContainerMedium} setShowCurrUserInf={setShowInfoContainerMedium} user={selectedUser}/>
+
+                   }
+                   { showSearchContainerMedium &&
+                       <SearchMessageContainer showSrc={showSearchContainerMedium} setShowSrc={setShowSearchContainerMedium} chat={chatOrj} user={selectedUser} />
+
+                   }
                    <CurrentUserInfoContainer showCurrUserInf={showCurrInfoContainer} setShowCurrUserInf={setShowCurrInfoContainer} user={currentUserData}/>
                    <label className={'chat-label'}>Chat</label>
                    {
@@ -325,12 +387,15 @@ function Chat(props) {
                                />
                            </form>
                        </div>
-                       <div className={'upload-file'}>
-                           <div className={'upload-file-icon'}>📎</div>
-                           {/*<input type="file" id="myFile"/>*/}
-                       </div>
+                       <form className={'upload-file'} >
+                           {/*<div className={'upload-file-icon'}>📎</div>*/}
+                           <input type="file" id="myFile" onChange={handleFileSubmit}/>
+                           <label htmlFor="myFile">
+                               <div className={'upload-file-icon'}>📎</div>
+                           </label>
+                       </form>
 
-                       <div className={'send-button'} onClick={handleMessageSubmit}>Send</div>
+                       <div className={'send-button'} onClick={handleMessageSubmit}>Gönder</div>
                    </div>
                </div>
                <SearchMessageContainer showSrc={showSearchContainer} setShowSrc={setShowSearchContainer} chat={chatOrj} user={selectedUser} />

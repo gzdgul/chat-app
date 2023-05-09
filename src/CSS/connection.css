@@ -11,6 +11,7 @@
     background-color: var(--white);
 }
 
+/*connection seçildiği zaman*/
 .selected {
     display: flex;
     justify-content: space-between;

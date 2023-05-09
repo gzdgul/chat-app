@@ -9,6 +9,9 @@ import {
 } from "firebase/auth";
 import {arrayUnion, collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc} from "firebase/firestore";
 import {getDatabase, onValue, push, ref, set} from "firebase/database";
+import { getStorage, uploadBytesResumable, getDownloadURL,getMetadata } from "firebase/storage";
+import { ref as sRef } from 'firebase/storage';
+
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -25,9 +28,65 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
 const database = getDatabase(app);
+const storage = getStorage();
 const chatsDatabaseRef = ref(database, 'chats');
 const realtimeTypingDataRef = ref(database, 'typing');
+const metadata = {
+    contentType: 'image/jpeg'
+};
 
+
+
+
+export const sendFiles = async (fileInput,recieverID) => {
+    const currentUserID = auth.currentUser.uid
+    const file = fileInput.files[0];
+    const fileName = new Date().toISOString()
+    const metadata = {
+        customMetadata: {
+            'sender': currentUserID,
+            'reciever': recieverID
+        }
+    };
+
+    const storageRef = sRef(storage, `files/${currentUserID}/` + fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+    const recieverStorageRef = sRef(storage, `files/${recieverID}/` + fileName);
+    const recieverUploadTask = uploadBytesResumable(recieverStorageRef, file, metadata);
+    await uploadTask.on('state_changed',
+        (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+        },
+        (error) => {
+            console.log(error)
+        },
+         () => {
+
+             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                console.log('File available at', downloadURL);
+                sendMessage(recieverID, downloadURL )
+            });
+             getDownloadURL(recieverUploadTask.snapshot.ref).then((downloadURL) => {
+                console.log('File available at', downloadURL);
+            });
+        }
+    );
+
+
+    // setTimeout(() => {
+    //     getMetadata(storageRef).then(function(metadata) {
+    //         console.log('Dosya adı: ' + metadata.name);
+    //         console.log('Dosya boyutu: ' + metadata.size + ' bytes');
+    //         console.log('Dosya tipi: ' + metadata.contentType);
+    //         console.log('Oluşturma zamanı: ' + metadata.timeCreated);
+    //         console.log('Son değiştirme zamanı: ' + metadata.updated);
+    //     }).catch(function(error) {
+    //         console.log('Dosya detaylarını alırken bir hata oluştu: ' + error.message);
+    //     });
+    // },6000)
+
+}
 
 export const getUserData = async (userID) => {
     const usersDocRef = doc(db, "users", userID);
