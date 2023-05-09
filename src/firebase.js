@@ -40,12 +40,16 @@ const metadata = {
 
 export const sendFiles = async (fileInput,recieverID) => {
     const currentUserID = auth.currentUser.uid
+    if (!fileInput.files[0]) {
+        return;
+    }
     const file = fileInput.files[0];
+    console.log('file', file)
     const fileName = new Date().toISOString()
     const metadata = {
         customMetadata: {
             'sender': currentUserID,
-            'reciever': recieverID
+            'reciever': recieverID,
         }
     };
 
@@ -65,7 +69,7 @@ export const sendFiles = async (fileInput,recieverID) => {
 
              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 console.log('File available at', downloadURL);
-                sendMessage(recieverID, downloadURL )
+                sendMessage(recieverID, downloadURL)
             });
              getDownloadURL(recieverUploadTask.snapshot.ref).then((downloadURL) => {
                 console.log('File available at', downloadURL);
