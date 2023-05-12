@@ -65,7 +65,7 @@
 
 .showInf {
     pointer-events: auto;
-    /*max-width: 600px;*/
+    /*max-width: 500px;*/
     width: 100%;
     min-height: 648px;
     opacity: 1;
@@ -643,3 +643,9 @@
     border-radius: 10px;
 }
 
+.progress-bar {
+    height: 4px;
+    background-color: #53de20;
+    /*position: absolute;*/
+    /*border-radius: 10px;*/
+}

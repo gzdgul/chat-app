@@ -4,7 +4,7 @@ import Connections from "../components/connections";
 import {
     getAllUserData, getLatestMessages,
     getUserData,
-    listenMessage, listenTyping, sendBOTMessage, sendFiles,
+    listenMessage, listenTyping, listImages, sendBOTMessage, sendFiles,
     sendMessage, setBOTMessageLTS, setLatestConnection, setLatestMessages, setTyping, setUnreadMessages,
     snapshotToArray, updateLatestConnection,
     updateUserConnections
@@ -20,6 +20,8 @@ import SearchMessageContainer from "../components/searchMessageContainer";
 import CurrentUserInfoContainer from "../components/currentUserInfoContainer";
 import useSelectMessage from "../stores/useSelectMessage";
 import useTypingUsers from "../stores/useTypingUsers";
+import ProgressBar from "../components/progressBar";
+import useFileProgress from "../stores/useFileProgress";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
@@ -44,6 +46,8 @@ function Chat(props) {
     const setLatestMessage = useLatestMessage(state => state.setMessage);
     const setTypingUsers = useTypingUsers(state => state.setTypingUsers);
     const typingUsers = useTypingUsers(state => state.typingUsers);
+    const fileProgress = useFileProgress(state => state.fileProgress);
+    const setFileProgress = useFileProgress(state => state.setFileProgress);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
     const [chatOrj, setChatOrj] = useState([]);
     const [chat, setChat] = useState([]);
@@ -89,11 +93,11 @@ function Chat(props) {
             result.forEach((x) => {
                 setTypingUsers(x)
                 console.log('GOZDEEE',x)
-
             })
-
         })
-
+    setTimeout(() => {
+        listImages()
+    },1000)
     },[])
 
     useEffect(() => {  ///CHATTEKİ TYPING YAZISI İÇİN
@@ -208,7 +212,13 @@ function Chat(props) {
 
     const handleFileSubmit = async (event) => {
         event.preventDefault()
-        await sendFiles(event.currentTarget, selectedUser.userID)
+        try {
+            await sendFiles(event.currentTarget, selectedUser.userID, handleProgress);
+            console.log('Dosya yükleme tamamlandı! İlgili işlemleri yapabilirsiniz.');
+            // İlgili işlemleri burada gerçekleştirin
+        } catch (error) {
+            console.log('Dosya yükleme sırasında bir hata oluştu:', error);
+        }
 
         if (!connections_.includes(selectedUser.userID)) {
             updateUserConnections(getAuth().currentUser.uid, selectedUser.userID).then(()  => {
@@ -226,6 +236,10 @@ function Chat(props) {
         setReporterBird()
 
     }
+    const handleProgress = (progress) => {
+        console.log('İlerleme durumu:', progress);
+        setFileProgress(progress)
+    };
     const darkModeToggle = () => {
         if (darkMode) {
             document.documentElement.style.setProperty('--purple', '#5d49e1');
@@ -339,7 +353,6 @@ function Chat(props) {
                                        : <span className={'online'}>online</span>
                                }
                            </div>
-
                        </div>
 
                        <div className={'chat-options'}>
@@ -347,6 +360,7 @@ function Chat(props) {
                            <div className={'chat-options-icon'}>︙</div>
                        </div>
                    </div>
+                   <ProgressBar progress={fileProgress}/>
                    <div className={'chat-area'} ref={chatDiv}>
                        <div className={'chat-start'}></div>
                        {

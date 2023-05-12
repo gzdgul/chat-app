@@ -9,8 +9,10 @@ import {
 } from "firebase/auth";
 import {arrayUnion, collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc} from "firebase/firestore";
 import {getDatabase, onValue, push, ref, set} from "firebase/database";
-import { getStorage, uploadBytesResumable, getDownloadURL,getMetadata } from "firebase/storage";
+import { getStorage, uploadBytesResumable, getDownloadURL,getMetadata, listAll } from "firebase/storage";
 import { ref as sRef } from 'firebase/storage';
+import useFileProgress from "./stores/useFileProgress";
+
 
 
 // Your web app's Firebase configuration
@@ -26,6 +28,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
+// const currentUserID = auth.currentUser.uid
 const db = getFirestore();
 const database = getDatabase(app);
 const storage = getStorage();
@@ -36,9 +39,30 @@ const metadata = {
 };
 
 
+export const listImages = () => {
+    const currentUserID = auth.currentUser.uid
+    const listRef = sRef(storage, `files/${currentUserID}`);
+    listAll(listRef)
+        .then((res) => {
+            res.prefixes.forEach((folderRef) => {
+                // All the prefixes under listRef.
+                // You may call listAll() recursively on them.
+                console.log('prefixes', folderRef)
+            });
+            res.items.forEach((itemRef) => {
+                // All the items under listRef.
+                console.log('items', itemRef)
 
+            });
+        }).catch((error) => {
+        // Uh-oh, an error occurred!
+        console.log('error', error)
 
-export const sendFiles = async (fileInput,recieverID) => {
+    });
+
+}
+
+export const sendFiles = async (fileInput,recieverID,onProgress) => {
     const currentUserID = auth.currentUser.uid
     if (!fileInput.files[0]) {
         return;
@@ -52,43 +76,48 @@ export const sendFiles = async (fileInput,recieverID) => {
             'reciever': recieverID,
         }
     };
-
     const storageRef = sRef(storage, `files/${currentUserID}/` + fileName);
     const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     const recieverStorageRef = sRef(storage, `files/${recieverID}/` + fileName);
     const recieverUploadTask = uploadBytesResumable(recieverStorageRef, file, metadata);
-    await uploadTask.on('state_changed',
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-        },
-        (error) => {
-            console.log(error)
-        },
-         () => {
+    return new Promise((resolve, reject) => {
+         uploadTask.on('state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + Math.floor(progress)  + '% done');
+                onProgress(Math.floor(progress)); // İlerleme durumunu geri çağırım işlevi aracılığıyla aktar
 
-             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                console.log('File available at', downloadURL);
-                sendMessage(recieverID, downloadURL)
+            },
+            (error) => {
+                console.log(error)
+                reject(error)
+            },
+            async () => {
+
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    console.log('File available at', downloadURL);
+                    sendMessage(recieverID, downloadURL)
+                });
+                getDownloadURL(recieverUploadTask.snapshot.ref).then((downloadURL) => {
+                    console.log('File available at', downloadURL);
+                });
+                resolve();
+            }
+
+        );
+        setTimeout(() => {
+            getMetadata(storageRef).then(function(metadata) {
+                console.log('Dosya adı: ' + metadata.name);
+                console.log('Dosya boyutu: ' + metadata.size + ' bytes');
+                console.log('Dosya tipi: ' + metadata.contentType);
+                console.log('Oluşturma zamanı: ' + metadata.timeCreated);
+                console.log('Son değiştirme zamanı: ' + metadata.updated);
+            }).catch(function(error) {
+                console.log('Dosya detaylarını alırken bir hata oluştu: ' + error.message);
             });
-             getDownloadURL(recieverUploadTask.snapshot.ref).then((downloadURL) => {
-                console.log('File available at', downloadURL);
-            });
-        }
-    );
+        },6000)
+    })
 
-
-    // setTimeout(() => {
-    //     getMetadata(storageRef).then(function(metadata) {
-    //         console.log('Dosya adı: ' + metadata.name);
-    //         console.log('Dosya boyutu: ' + metadata.size + ' bytes');
-    //         console.log('Dosya tipi: ' + metadata.contentType);
-    //         console.log('Oluşturma zamanı: ' + metadata.timeCreated);
-    //         console.log('Son değiştirme zamanı: ' + metadata.updated);
-    //     }).catch(function(error) {
-    //         console.log('Dosya detaylarını alırken bir hata oluştu: ' + error.message);
-    //     });
-    // },6000)
 
 }
 
