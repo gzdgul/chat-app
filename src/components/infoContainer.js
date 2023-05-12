@@ -1,4 +1,5 @@
 import React, {useEffect, useRef} from 'react';
+import SentImgContainer from "./sentImgContainer";
 
 function InfoContainer({showInf, setShowInf, user}) {
     const infoContainerRef = useRef(null);
@@ -29,14 +30,12 @@ function InfoContainer({showInf, setShowInf, user}) {
                             <p>Medyalar, bağlantılar ve belgeler</p>
                             <div className={'user-info-media-arrow'}>›</div>
                         </div>
-                        <div className={'user-info-media-footer-container'}>
-                            <div className={'user-info-media'}></div>
-                            <div className={'user-info-media'}></div>
-                            <div className={'user-info-media'}></div>
-                            <div className={'user-info-media'}></div>
-                            <div className={'user-info-media'}></div>
-                            <div className={'user-info-media'}></div>
-                        </div>
+
+                            <div className={'user-info-media-footer-container'}>
+                                <SentImgContainer user={user}/>
+                            </div>
+
+
 
                     </div>
                     <div className={'user-info-action-container'}>

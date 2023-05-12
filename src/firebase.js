@@ -39,27 +39,27 @@ const metadata = {
 };
 
 
-export const listImages = () => {
+export const listImages = async (recieverID) => {
     const currentUserID = auth.currentUser.uid
     const listRef = sRef(storage, `files/${currentUserID}`);
-    listAll(listRef)
-        .then((res) => {
-            res.prefixes.forEach((folderRef) => {
-                // All the prefixes under listRef.
-                // You may call listAll() recursively on them.
-                console.log('prefixes', folderRef)
-            });
-            res.items.forEach((itemRef) => {
-                // All the items under listRef.
-                console.log('items', itemRef)
+    const imgList = [];
 
-            });
-        }).catch((error) => {
-        // Uh-oh, an error occurred!
-        console.log('error', error)
+    try {
+        const res = await listAll(listRef);
+        const promises = res.items.map(async (itemRef) => {
+            const metadata = await getMetadata(itemRef);
+            if (metadata.customMetadata.sender === recieverID || metadata.customMetadata.reciever === recieverID) {
+                const dURL = await getDownloadURL(itemRef);
+                imgList.push(dURL);
+            }
+        });
 
-    });
+        await Promise.all(promises);
+        return imgList;
 
+    } catch (error) {
+        console.log('error', error);
+    }
 }
 
 export const sendFiles = async (fileInput,recieverID,onProgress) => {
@@ -112,6 +112,7 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
                 console.log('Dosya tipi: ' + metadata.contentType);
                 console.log('Oluşturma zamanı: ' + metadata.timeCreated);
                 console.log('Son değiştirme zamanı: ' + metadata.updated);
+                console.log('TESTTTTTTTTTTTT: ' + metadata.customMetadata.sender);
             }).catch(function(error) {
                 console.log('Dosya detaylarını alırken bir hata oluştu: ' + error.message);
             });

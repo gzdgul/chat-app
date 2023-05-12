@@ -165,8 +165,7 @@
     justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
-    overflow-y: scroll;
-
+    overflow: hidden;
 }
 .user-info-media {
     display: flex;
@@ -648,6 +647,4 @@
     width: 0;
     height: 4px;
     background-color: #53de20;
-    /*position: absolute;*/
-    /*border-radius: 10px;*/
 }

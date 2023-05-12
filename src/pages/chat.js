@@ -95,10 +95,14 @@ function Chat(props) {
                 console.log('GOZDEEE',x)
             })
         })
-    setTimeout(() => {
-        listImages()
-    },1000)
+
     },[])
+
+    // useEffect(() => {
+    //     (selectedUser) && listImages(selectedUser.userID)
+    //         .then((x) => console.log('TESTTTTTTTT',x))
+    //
+    // },[selectedUser])
 
     useEffect(() => {  ///CHATTEKİ TYPING YAZISI İÇİN
         const user = typingUsers?.find((y) => y.typerID === selectedUser?.userID)
@@ -267,7 +271,7 @@ function Chat(props) {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         if (curr_date.toLocaleDateString() !== prev_date.toLocaleDateString()) {
             return (
-                <div className={'date-bar-container'} >
+                <div className={'date-bar-container'} key={curr.id} >
                     <div className={'date-bar'}>
                         {
                             (today_date.toLocaleDateString() === curr_date.toLocaleDateString())
@@ -363,12 +367,12 @@ function Chat(props) {
                    <ProgressBar progress={fileProgress}/>
                    <div className={'chat-area'} ref={chatDiv}>
                        <div className={'chat-start'}></div>
-                       {
-                          (selectedUser === null ) &&
-                           otoMessageCounter.map((x,i) => {
-                               return  <Messages message ={x} date={new Date()} sender='oto' key={'OTO_' + i} />
-                           })
-                       }
+                       {/*{*/}
+                       {/*   (selectedUser === null ) &&*/}
+                       {/*    otoMessageCounter.map((x,i) => {*/}
+                       {/*        return  <Messages message ={x} date={new Date()} sender='oto' key={'OTO_' + i} />*/}
+                       {/*    })*/}
+                       {/*}*/}
 
                        {
                            chat.map((messageObj, index) => {
@@ -379,8 +383,8 @@ function Chat(props) {
                                        { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
                                        {
                                            (messageObj.senderUserId === getAuth().currentUser.uid)
-                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' key={'ME_' + index} />
-                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' key={'FRIEND_' + index}/>
+                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' key={messageObj.key} />
+                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' key={messageObj.key}/>
                                        }
                                    </>
                                )
@@ -418,6 +422,7 @@ function Chat(props) {
            </div>
         </div>
     );
+
 }
 
 export default Chat;
