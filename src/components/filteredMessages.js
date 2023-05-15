@@ -25,6 +25,9 @@ function FilteredMessages({messageObj, input}) {
         // alert(e.target.innerText)
         setSelectedMessage(e.target.textContent)
     }
+    if (message.includes('http') && message.includes('firebase')) {
+        return;
+    }
 
     return (
         <div className={'filtered-message'} onClick={handleClick}>

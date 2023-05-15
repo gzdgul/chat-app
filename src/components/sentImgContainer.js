@@ -15,10 +15,11 @@ function SentImgContainer({user}) {
 
 
     return (
-
-            imgList.reverse().slice(0,6).map((x,i) => {
-               return <div className={'user-info-media'} key={'user-info-media' + i} ><img src={x} alt={x} /></div>
+        imgList.length > 0
+            ? imgList.reverse().slice(0,6).map((x,i) => {
+                return <div className={'user-info-media'} key={'user-info-media' + i} ><img src={x} alt={x} /></div>
             })
+            : <div className={'noImage'}> No images found </div>
 
     );
 }

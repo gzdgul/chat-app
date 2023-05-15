@@ -48,7 +48,7 @@ function SearchMessageContainer({showSrc, setShowSrc, chat, user}) {
                                        onChange={(e) => {
                                            (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
                                            setMessageSearchInput(e.target.value)
-                                           setFilteredMessages(chat.filter((x) => x.message.includes(e.target.value)))
+                                           setFilteredMessages(chat.filter((x) => x.message.includes(e.target.value)).reverse())
                                        }}
                                 />
                             </form>
@@ -57,8 +57,8 @@ function SearchMessageContainer({showSrc, setShowSrc, chat, user}) {
                     <div className={'filtered-message-container'}>
 
                         { searching &&
-                            filteredMessages?.reverse().map((x) => {
-                               return <FilteredMessages messageObj={x} input={messageSearchInput}/>
+                            filteredMessages?.map((x,i) => {
+                               return <FilteredMessages key={i} messageObj={x} input={messageSearchInput}/>
                             })
                         }
 
