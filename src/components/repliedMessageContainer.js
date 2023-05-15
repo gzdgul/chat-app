@@ -39,11 +39,12 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
     const info = `${sender}, ${new Date(repliedMessage.date).toLocaleString().slice(0,-3)}`
 
     return (
-        <div className={'replied-message-container'}>
-            <div className={'replied-icon'}><i className="fa fa-reply"></i></div>
-            {
+
+
                 repliedStatus && repliedMessage_
                     ?
+                    <div className={'replied-message-container messages'}>
+                        <div className={'replied-icon'}><i className="fa fa-reply"></i></div>
                 <div className={'replied-message'}>
                     <div className={'message'}>{
                         repliedMessage_?.message.includes('http')
@@ -56,7 +57,10 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
                         `${sender_}, ${new Date(repliedMessage_?.date).toLocaleString().slice(0,-3)}`
                     }</div>
                 </div>
+                    </div>
                     :
+                <div className={'replied-message-container'}>
+                    <div className={'replied-icon'}><i className="fa fa-reply"></i></div>
                     <div className={'replied-message'}>
                         <div className={'message'}>{
                             repliedMessage.message?.includes('http')
@@ -67,13 +71,11 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
                         }</div>
                         <div className={'info'}>{info}</div>
                     </div>
-            }
-            {
-                !repliedStatus &&
-                <div className={'cancel-button'} onClick={() => setReplyMode(false)}>✖</div>
-            }
+                    <div className={'cancel-button'} onClick={() => setReplyMode(false)}>✖</div>
+                </div>
 
-        </div>
+
+
     );
 }
 
