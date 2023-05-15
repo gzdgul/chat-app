@@ -22,6 +22,8 @@ import useSelectMessage from "../stores/useSelectMessage";
 import useTypingUsers from "../stores/useTypingUsers";
 import ProgressBar from "../components/progressBar";
 import useFileProgress from "../stores/useFileProgress";
+import useToggleReplyMode from "../stores/useToggleReplyMode";
+import RepliedMessageContainer from "../components/repliedMessageContainer";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
@@ -48,6 +50,8 @@ function Chat(props) {
     const typingUsers = useTypingUsers(state => state.typingUsers);
     const fileProgress = useFileProgress(state => state.fileProgress);
     const setFileProgress = useFileProgress(state => state.setFileProgress);
+    const replyMode = useToggleReplyMode(state => state.replyMode);
+    const setReplyMode = useToggleReplyMode(state => state.setReplyMode);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
     const [chatOrj, setChatOrj] = useState([]);
     const [chat, setChat] = useState([]);
@@ -92,17 +96,14 @@ function Chat(props) {
             console.log('result',result)
             result.forEach((x) => {
                 setTypingUsers(x)
-                console.log('GOZDEEE',x)
             })
         })
 
     },[])
 
-    // useEffect(() => {
-    //     (selectedUser) && listImages(selectedUser.userID)
-    //         .then((x) => console.log('TESTTTTTTTT',x))
-    //
-    // },[selectedUser])
+    useEffect(() => {
+        setReplyMode(false)
+    },[selectedUser])
 
     useEffect(() => {  ///CHATTEKİ TYPING YAZISI İÇİN
         const user = typingUsers?.find((y) => y.typerID === selectedUser?.userID)
@@ -392,7 +393,11 @@ function Chat(props) {
                        }
                    </div>
                    <div className={'footer-chat-area'}>
-                       <div className={'message-area'}>
+                       <div className={replyMode ? 'message-area-reply-mode' : 'message-area'}>
+                           {/*<div className={'replied-message-container'}></div>*/}
+                           {replyMode &&
+                               <RepliedMessageContainer selectedUser={selectedUser} currentUser={currentUserData}/>
+                           }
                            <form className={'testtt'} onSubmit={handleMessageSubmit}>
                                <input className={'message-input'} type="text" placeholder={'Bir mesaj yazın.'}
                                       value={currentMessage}
@@ -407,7 +412,7 @@ function Chat(props) {
                        </div>
                        <form className={'upload-file'} >
                            {/*<div className={'upload-file-icon'}>📎</div>*/}
-                           <input type="file" id="myFile" onChange={handleFileSubmit}/>
+                           <input type="file" id="myFile" style={{display: "none"}} onChange={handleFileSubmit}/>
                            <label htmlFor="myFile">
                                <div className={'upload-file-icon'}>📎</div>
                            </label>

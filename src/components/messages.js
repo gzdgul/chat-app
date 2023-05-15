@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 import MessageOptions from "./messageOptions";
+// import useToggleReplyMode from "../stores/useToggleReplyMode";
 
 
 function Messages({message, date, sender}) {
+    // const setRepliedMessage = useToggleReplyMode(state => state.setRepliedMessage);
     const dateObj = new Date(date);
     const hour = dateObj.getHours();
     const minute = dateObj.getMinutes();
@@ -12,9 +14,10 @@ function Messages({message, date, sender}) {
     const [showOptions, setShowOptions] = useState(false)
 
 
-    const handleClick = () => {
+    const handleClick = (e) => {
         setShowOptions(!showOptions)
-        console.log(true)
+        // console.log(message)
+        // console.log(date)
     }
 
     return (
@@ -22,9 +25,8 @@ function Messages({message, date, sender}) {
             {(sender === 'me') &&
                 <div className={'chat-right'} onMouseLeave={() => {
                     setShowOptions(false)
-                    console.log(false)
                 }}>
-                    <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} />
+                    <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} message={message} date={date} />
                     <div className={'testt'}>
                         <div className={`chat-bubble${message.length < 25 ? '' : '-long'} ${showOptions ? 'selected-message' : ''}`}
                              onClick={handleClick}
@@ -44,7 +46,7 @@ function Messages({message, date, sender}) {
                     setShowOptions(false)
                     console.log(false)
                 }}>
-                    <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender}/>
+                    <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} message={message} date={date} />
                     <div className={'testt'}>
                         <div className={`chat-bubble${message.length < 25 ? '' : '-long'} ${showOptions ? 'selected-message' : ''}`}
                              onClick={handleClick}

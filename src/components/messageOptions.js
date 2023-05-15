@@ -1,6 +1,9 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import useToggleReplyMode from "../stores/useToggleReplyMode";
 
-function MessageOptions({show, setShow, sender}) {
+function MessageOptions({show, setShow, sender, message, date}) {
+    const setRepliedMessage = useToggleReplyMode(state => state.setRepliedMessage);
+    const setReplyMode = useToggleReplyMode(state => state.setReplyMode);
     const optionsRef = useRef(null)
     useEffect(() => {
         if (show) {
@@ -10,12 +13,18 @@ function MessageOptions({show, setShow, sender}) {
         }
     }, [show]);
 
+    const handleReplyClick = () => {
+        setReplyMode(true)
+        setRepliedMessage(message,date,sender)
+        console.log(message,date,sender)
+
+    }
     //onMouseLeave={() => setShow(false)}
     return (
         <div className={`options-container ${sender}`}
              ref={optionsRef} >
             <ul >
-                <li>Cevapla</li>
+                <li onClick={handleReplyClick}>Cevapla</li>
                 <li>İlet</li>
                 <li>Sil</li>
                 <li>İfade Bırak</li>
