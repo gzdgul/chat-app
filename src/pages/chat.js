@@ -50,6 +50,7 @@ function Chat(props) {
     const typingUsers = useTypingUsers(state => state.typingUsers);
     const fileProgress = useFileProgress(state => state.fileProgress);
     const setFileProgress = useFileProgress(state => state.setFileProgress);
+    const messageKey = useToggleReplyMode(state => state.messageKey);
     const replyMode = useToggleReplyMode(state => state.replyMode);
     const setReplyMode = useToggleReplyMode(state => state.setReplyMode);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
@@ -78,6 +79,7 @@ function Chat(props) {
                         (x.senderUserId === getAuth().currentUser.uid && x.recieverUserId === selectedUser.userID) ||
                         (x.recieverUserId === getAuth().currentUser.uid && x.senderUserId === selectedUser.userID)
                     )
+                    console.log('ALL', result)
                     setChat(result);
                     setChatOrj(result);
                 } else {
@@ -150,7 +152,12 @@ function Chat(props) {
             await setLatestMessages(selectedUser.userID,currentMessage)
              updateLatestConnection(selectedUser.userID)
              setUnreadMessages(selectedUser.userID,currentMessage)
-            sendMessage(selectedUser.userID, currentMessage)
+            if (replyMode) {
+                sendMessage(selectedUser.userID, currentMessage,true, messageKey)
+            }
+            else {
+                sendMessage(selectedUser.userID, currentMessage)
+            }
             setCurrentMessage('')
             setReporterBird()
             setTimeout(() => {
@@ -384,8 +391,8 @@ function Chat(props) {
                                        { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
                                        {
                                            (messageObj.senderUserId === getAuth().currentUser.uid)
-                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' key={messageObj.key} />
-                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' key={messageObj.key}/>
+                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' repliedStatus={messageObj.replied} repliedMessageKey={messageObj.repliedMessageKey} currentMessageKey={messageObj.key} />
+                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' repliedStatus={messageObj.replied} repliedMessageKey={messageObj.repliedMessageKey} currentMessageKey={messageObj.key}/>
                                        }
                                    </>
                                )

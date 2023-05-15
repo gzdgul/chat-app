@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import useToggleReplyMode from "../stores/useToggleReplyMode";
 
-function MessageOptions({show, setShow, sender, message, date}) {
+function MessageOptions({show, setShow, sender, message, date, currentMessageKey}) {
+    const setMessageKey = useToggleReplyMode(state => state.setMessageKey);
     const setRepliedMessage = useToggleReplyMode(state => state.setRepliedMessage);
     const setReplyMode = useToggleReplyMode(state => state.setReplyMode);
     const optionsRef = useRef(null)
@@ -15,9 +16,9 @@ function MessageOptions({show, setShow, sender, message, date}) {
 
     const handleReplyClick = () => {
         setReplyMode(true)
+        setMessageKey(currentMessageKey)
         setRepliedMessage(message,date,sender)
-        console.log(message,date,sender)
-
+        console.log(currentMessageKey)
     }
     //onMouseLeave={() => setShow(false)}
     return (

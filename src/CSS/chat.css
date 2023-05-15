@@ -506,7 +506,8 @@
 
 .testt {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    /*align-items: end;*/
     max-width: 50%;
 }
 

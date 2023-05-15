@@ -6,6 +6,7 @@ const useToggleReplyMode = create((set) => ({
         message: null,
         date: null
     },
+    messageKey: null,
     setReplyMode: (x) => {
         set(() => ({
             replyMode: x
@@ -19,7 +20,12 @@ const useToggleReplyMode = create((set) => ({
                 sender: sender
             }
         }))
-    }
+    },
+    setMessageKey: (x) => {
+        set(() => ({
+            messageKey: x
+        }))
+    },
 }));
 
 export default useToggleReplyMode;

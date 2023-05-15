@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import MessageOptions from "./messageOptions";
+import RepliedMessageContainer from "./repliedMessageContainer";
 // import useToggleReplyMode from "../stores/useToggleReplyMode";
 
 
-function Messages({message, date, sender}) {
+function Messages({message, date, sender, repliedStatus, repliedMessageKey, currentMessageKey}) {
     // const setRepliedMessage = useToggleReplyMode(state => state.setRepliedMessage);
     const dateObj = new Date(date);
     const hour = dateObj.getHours();
@@ -16,8 +17,8 @@ function Messages({message, date, sender}) {
 
     const handleClick = (e) => {
         setShowOptions(!showOptions)
-        // console.log(message)
-        // console.log(date)
+        console.log(currentMessageKey)
+        console.log(message)
     }
 
     return (
@@ -26,8 +27,11 @@ function Messages({message, date, sender}) {
                 <div className={'chat-right'} onMouseLeave={() => {
                     setShowOptions(false)
                 }}>
-                    <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} message={message} date={date} />
+                    <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} message={message} date={date} currentMessageKey={currentMessageKey} />
                     <div className={'testt'}>
+                        { repliedStatus &&
+                            <RepliedMessageContainer repliedStatus={repliedStatus} repliedMessageKey={repliedMessageKey}/>
+                        }
                         <div className={`chat-bubble${message.length < 25 ? '' : '-long'} ${showOptions ? 'selected-message' : ''}`}
                              onClick={handleClick}
                         >
@@ -46,8 +50,11 @@ function Messages({message, date, sender}) {
                     setShowOptions(false)
                     console.log(false)
                 }}>
-                    <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} message={message} date={date} />
+                    <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} message={message} date={date} currentMessageKey={currentMessageKey} />
                     <div className={'testt'}>
+                        { repliedStatus &&
+                            <RepliedMessageContainer repliedStatus={repliedStatus} repliedMessageKey={repliedMessageKey}/>
+                        }
                         <div className={`chat-bubble${message.length < 25 ? '' : '-long'} ${showOptions ? 'selected-message' : ''}`}
                              onClick={handleClick}
                         >
