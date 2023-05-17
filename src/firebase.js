@@ -17,12 +17,12 @@ import useFileProgress from "./stores/useFileProgress";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: 'AIzaSyDlGsUxosPSzfDSoe3uDPQDX5n9yhapzbo',
-    authDomain: 'chat-b8b69.firebaseapp.com' ,
-    projectId: 'chat-b8b69' ,
-    storageBucket: 'chat-b8b69.appspot.com' ,
-    messagingSenderId: '666141740376' ,
-    appId: '1:666141740376:web:7064c6c8ddd59f5f8be92d'
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN ,
+    projectId: process.env.REACT_APP_PROJECT_ID ,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET ,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID ,
+    appId: process.env.REACT_APP_APP_ID
 };
 
 // Initialize Firebase
@@ -244,9 +244,9 @@ export const updateDisplayName = async (displayName) => {
 
 export const register = async (email, password) => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password)
-    const welcome_text = 'TEST 123'
-    await sendBOTMessage(user.uid, welcome_text)
-    await setBOTMessageLTS(user.uid, welcome_text)
+    // const welcome_text = 'TEST 123'
+    // // await sendBOTMessage(user.uid, welcome_text)
+    // await setBOTMessageLTS(user.uid, welcome_text)
     return user
 }
 
