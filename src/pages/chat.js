@@ -64,7 +64,7 @@ function Chat(props) {
             setConnections(response.find(x => x.userID === getAuth().currentUser.uid).connections);
             setCurrentUserData(response.find(x => x.userID === getAuth().currentUser.uid));
             const latestConnID = response.find(x => x.userID === getAuth().currentUser.uid).latestConnection;
-            (latestConnID !== null) && getUserData(latestConnID).then((response) => setSelectedUser(response))
+            (latestConnID) && getUserData(latestConnID).then((response) => setSelectedUser(response)) // !== null
 
         });
 
@@ -102,6 +102,10 @@ function Chat(props) {
         })
 
     },[])
+
+    useEffect(() => {
+
+    },[connections_])
 
     useEffect(() => {
         setReplyMode(false)
@@ -160,10 +164,10 @@ function Chat(props) {
             }
             setCurrentMessage('')
             setReporterBird()
-            setTimeout(() => {
-                // sendBOTMessage(selectedUser.userID,'KATCHA-BOT')
-                // setBOTMessageLTS(selectedUser.userID, 'KATCHA-BOT')
-            },500)
+            // setTimeout(() => {
+            //     sendBOTMessage(selectedUser.userID,'KATCHA-BOT')
+            //     setBOTMessageLTS(selectedUser.userID, 'KATCHA-BOT')
+            // },500)
 
         }
         if (selectedUser === null && otoMessageCounter.length < 10) {

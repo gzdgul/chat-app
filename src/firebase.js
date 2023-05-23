@@ -151,7 +151,7 @@ export const setUserData = async (displayName, email,avatarLink) => {
         userID: auth.currentUser.uid,
         displayName: displayName,
         email: email,
-        connections: ['Vd8vr3gobBUrFYt796Wjb5dmzlM2'],
+        connections: ['Vd8vr3gobBUrFYt796Wjb5dmzlM2'],//Vd8vr3gobBUrFYt796Wjb5dmzlM2
         avatarLink: avatarLink,
         latestConnection: 'Vd8vr3gobBUrFYt796Wjb5dmzlM2'
     });
