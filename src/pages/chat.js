@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import '../CSS/chat.css';
+import '../CSS/chat-ph.css';
 import Connections from "../components/connections";
 import {
     getAllUserData, getLatestMessages,
@@ -9,6 +10,7 @@ import {
     snapshotToArray, updateLatestConnection,
     updateUserConnections
 } from "../firebase";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Messages from "../components/messages";
 import {getAuth} from "firebase/auth";
 import useSelectUser from "../stores/useSelectUser";
@@ -24,6 +26,9 @@ import ProgressBar from "../components/progressBar";
 import useFileProgress from "../stores/useFileProgress";
 import useToggleReplyMode from "../stores/useToggleReplyMode";
 import RepliedMessageContainer from "../components/repliedMessageContainer";
+import {faComments, faEarthAmericas, faGears, faPhone, faUser} from "@fortawesome/free-solid-svg-icons";
+import ChatAreaContainer from "../components/chatAreaContainer";
+import useShowChat from "../stores/useShowChat";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
@@ -38,10 +43,10 @@ function Chat(props) {
     const [currentUserData, setCurrentUserData] = useState([])
     const [filteredUserData, setFilteredUserData] = useState([])
     const [searching, setSearching] = useState(false)
-    const [isTyping, setIsTyping] = useState(false)
     const [darkMode, setDarkMode] = useState(false)
     const selectedUser = useSelectUser(state => state.user);
     const selectedMessage = useSelectMessage(state => state.selectedMessage);
+    const showChat = useShowChat(state => state.showChat);
     const setSelectedUser = useSelectUser(state => state.setUser);
     const connections_ = useConnections(state => state.connections_);
     const setConnections = useConnections(state => state.setConnections);
@@ -56,7 +61,12 @@ function Chat(props) {
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
     const [chatOrj, setChatOrj] = useState([]);
     const [chat, setChat] = useState([]);
-    const chatDiv = useRef(null);
+    const [screenWidth, setScreenWidth] = useState(undefined);
+
+    useEffect(() => {
+        setScreenWidth(window.innerWidth)
+        console.log('SCREEN',window.innerWidth)
+    },[window.innerWidth])
 
     useEffect(() => {
         getAllUserData().then((response) => {
@@ -111,33 +121,14 @@ function Chat(props) {
         setReplyMode(false)
     },[selectedUser])
 
-    useEffect(() => {  ///CHATTEKİ TYPING YAZISI İÇİN
-        const user = typingUsers?.find((y) => y.typerID === selectedUser?.userID)
-        setIsTyping(user?.status)
-    },[typingUsers])
+
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
 
     }
 
-    useEffect(() => {
-        chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
-        setTimeout(() => {
-            chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
-        },1000)
-    }, [chat])
 
-    useEffect(() => {
-        if (selectedMessage) {
-            const messageElems = chatDiv.current.querySelectorAll('.chat-bubble, .chat-bubble-long');
-            messageElems.forEach((elem) => {
-                if (elem.textContent.includes(selectedMessage)) {
-                    elem.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        }
-    }, [selectedMessage]);
 
     const handleMessageSubmit = async (e) => { ////////////////// SEND MESSAGE
         e.preventDefault();
@@ -275,166 +266,123 @@ function Chat(props) {
         }
     }
 
-    const checkDate = (curr, prev) => {
-        const curr_date = new Date(curr.date);
-        const prev_date = new Date(prev.date);
-        const today_date = new Date()
-        const diffTime = Math.abs(today_date - curr_date);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (curr_date.toLocaleDateString() !== prev_date.toLocaleDateString()) {
-            return (
-                <div className={'date-bar-container'} key={curr.id} >
-                    <div className={'date-bar'}>
-                        {
-                            (today_date.toLocaleDateString() === curr_date.toLocaleDateString())
-                                ? 'Bugün'
-                                : (diffDays < 8) ?
-                                    (diffDays === 1)
-                                    ? 'Dün'
-                                    : curr_date.toLocaleDateString('default', { weekday: 'long' })
-                                                :  (diffDays < 365)
-                                                    ? curr_date.toLocaleDateString('default', { day: 'numeric', month: 'long', weekday: 'short' })
-                                                    : curr_date.toLocaleDateString('default', { day: 'numeric', month: 'long', year: 'numeric' })
-                        }
-                    </div>
-                </div>
-            )
-        }
-    }
+
+
     return (
         <div className={'screen screenChat'}>
 
            <div className={'chatContainer'}>
-               <div className={'connections-container'}>
-                   <div className={'header-connections'}>
-                      <div className={'user-info'} onClick={currUserInfoToggle}>
-                          <div className={'user-photo'}><img src={currentUserData.avatarLink} alt="avatar"/></div>
-                          <div className={'user-display-name'}>{getAuth().currentUser?.displayName}</div>
-                      </div>
-                       <div className={'chat-logo'}></div>
-                   </div>
-                   {
-                       showInfoContainerMedium &&
-                       <InfoContainer showInf={showInfoContainerMedium} setShowInf={setShowInfoContainerMedium} user={selectedUser}/>
-                       // <CurrentUserInfoContainer showCurrUserInf={showInfoContainerMedium} setShowCurrUserInf={setShowInfoContainerMedium} user={selectedUser}/>
 
-                   }
-                   { showSearchContainerMedium &&
-                       <SearchMessageContainer showSrc={showSearchContainerMedium} setShowSrc={setShowSearchContainerMedium} chat={chatOrj} user={selectedUser} />
-
-                   }
-                   <CurrentUserInfoContainer showCurrUserInf={showCurrInfoContainer} setShowCurrUserInf={setShowCurrInfoContainer} user={currentUserData}/>
-                   <label className={'chat-label'}>Chat</label>
-                   {
-                           <div className={'connections'}>
-                               <div className={'search'}>
-                                   <div className={'search-bar'}>
-                                       <div className={'search-icon'}><i className="fa fa-search"></i></div>
-                                       <form className={'search-form'} onSubmit={handleSearchSubmit}>
-                                           <input className={'connection-search-input'} type="text"
-                                                  placeholder={'Aratın veya yeni bir sohbet başlatın'}
-                                                  onChange={(e) => {
-                                                      (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
-                                                      setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
-                                                  } }
-                                           />
-
-                                       </form>
-                                   </div>
+               {
+                   !showChat ?
+                       <div className={'connections-container'}>
+                           <div className={'header-connections'}>
+                               <div className={'user-info'} onClick={currUserInfoToggle}>
+                                   <div className={'user-photo'}><img src={currentUserData.avatarLink} alt="avatar"/></div>
+                                   <div className={'user-display-name'}>{getAuth().currentUser?.displayName}</div>
                                </div>
-                               { searching &&
-                                   filteredUserData.map((x) => {
-                                       return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID} userData={x}  />
-                                   })
-                               }
-                               { !searching &&
-                                   connections_?.map((x) => {
-                                       return <Connections key={'COMP_CONNECTION_' + x} userId={x}  />
-                                   })
-                               }
+                               <div className={'chat-logo'}></div>
                            </div>
+                           {
+                               showInfoContainerMedium &&
+                               <InfoContainer showInf={showInfoContainerMedium} setShowInf={setShowInfoContainerMedium} user={selectedUser}/>
+                               // <CurrentUserInfoContainer showCurrUserInf={showInfoContainerMedium} setShowCurrUserInf={setShowInfoContainerMedium} user={selectedUser}/>
 
-                   }
-               </div>
-               <div className={'chat-area-container'}>
-                   <div className={'header-chat-area'}>
-                       <div className={'header-chat-user-index'} onClick={userInfoToggle}>
-                           {selectedUser &&
-                               <div className={'friend-logo'}><img src={selectedUser?.avatarLink} alt="avatar"/></div>
                            }
-                           <div className={'friend-name'}>{selectedUser?.displayName}
-                               {
-                                   isTyping
-                                       ? <span className={'typing'}>yazıyor...</span>
-                                       : <span className={'online'}>online</span>
-                               }
-                           </div>
-                       </div>
+                           { showSearchContainerMedium &&
+                               <SearchMessageContainer showSrc={showSearchContainerMedium} setShowSrc={setShowSearchContainerMedium} chat={chatOrj} user={selectedUser} />
 
-                       <div className={'chat-options'}>
-                           <div className={'chat-search-icon'} onClick={searchMessageToggle} ><i className="fa fa-search"></i></div>
-                           <div className={'chat-options-icon'}>︙</div>
-                       </div>
-                   </div>
-                   <ProgressBar progress={fileProgress}/>
-                   <div className={'chat-area'} ref={chatDiv}>
-                       <div className={'chat-start'}></div>
-                       {/*{*/}
-                       {/*   (selectedUser === null ) &&*/}
-                       {/*    otoMessageCounter.map((x,i) => {*/}
-                       {/*        return  <Messages message ={x} date={new Date()} sender='oto' key={'OTO_' + i} />*/}
-                       {/*    })*/}
-                       {/*}*/}
-
-                       {
-                           chat.map((messageObj, index) => {
-                               return (
-                                   <>
-
-                                       { (index === 0) && checkDate(messageObj, new Date()) }
-                                       { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
-                                       {
-                                           (messageObj.senderUserId === getAuth().currentUser.uid)
-                                               ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' repliedStatus={messageObj.replied} repliedMessageKey={messageObj.repliedMessageKey} currentMessageKey={messageObj.key} />
-                                               : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' repliedStatus={messageObj.replied} repliedMessageKey={messageObj.repliedMessageKey} currentMessageKey={messageObj.key}/>
-                                       }
-                                   </>
-                               )
-                           })
-                       }
-                   </div>
-                   <div className={'footer-chat-area'}>
-                       <div className={replyMode ? 'message-area-reply-mode' : 'message-area'}>
-                           {/*<div className={'replied-message-container'}></div>*/}
-                           {replyMode &&
-                               <RepliedMessageContainer selectedUser={selectedUser} currentUser={currentUserData}/>
                            }
-                           <form className={'testtt'} onSubmit={handleMessageSubmit}>
-                               <input className={'message-input'} type="text" placeholder={'Bir mesaj yazın.'}
-                                      value={currentMessage}
-                                      onChange={(e) => {
-                                          setCurrentMessage(e.target.value)
+                           <CurrentUserInfoContainer showCurrUserInf={showCurrInfoContainer} setShowCurrUserInf={setShowCurrInfoContainer} user={currentUserData}/>
+                           <label className={'chat-label'}>Chat</label>
+                           {
+                               <div className={'connections'}>
+                                   <div className={'search'}>
+                                       <div className={'search-bar'}>
+                                           <div className={'search-icon'}><i className="fa fa-search"></i></div>
+                                           <form className={'search-form'} onSubmit={handleSearchSubmit}>
+                                               <input className={'connection-search-input'} type="text"
+                                                      placeholder={'Aratın veya yeni bir sohbet başlatın'}
+                                                      onChange={(e) => {
+                                                          (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
+                                                          setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
+                                                      } }
+                                               />
 
+                                           </form>
+                                       </div>
+                                   </div>
 
-                                      }
-                               }
-                               />
-                           </form>
+                                   { searching &&
+                                       filteredUserData.map((x) => {
+                                           return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID} userData={x}  />
+                                       })
+                                   }
+                                   { !searching &&
+                                       connections_?.map((x) => {
+                                           return <Connections key={'COMP_CONNECTION_' + x} userId={x}  />
+                                       })
+                                   }
+                               </div>
+
+                           }
                        </div>
-                       <form className={'upload-file'} >
-                           {/*<div className={'upload-file-icon'}>📎</div>*/}
-                           <input type="file" id="myFile" style={{display: "none"}} onChange={handleFileSubmit}/>
-                           <label htmlFor="myFile">
-                               <div className={'upload-file-icon'}>📎</div>
-                           </label>
-                       </form>
+                       :
+                       <ChatAreaContainer selectedUser={selectedUser} chat={chat}
+                                          currentUserData={currentUserData}
+                                          currentMessage={currentMessage}
+                                          setCurrentMessage={setCurrentMessage}
+                                          userInfoToggle={userInfoToggle}
+                                          searchMessageToggle={searchMessageToggle}
+                                          handleMessageSubmit={handleMessageSubmit}
+                                          handleFileSubmit={handleFileSubmit}
+                       />
 
-                       <div className={'send-button'} onClick={handleMessageSubmit}>Gönder</div>
-                   </div>
-               </div>
+               }
+               {
+                   screenWidth > 900 &&
+                   <ChatAreaContainer selectedUser={selectedUser} chat={chat}
+                                      currentUserData={currentUserData}
+                                      currentMessage={currentMessage}
+                                      setCurrentMessage={setCurrentMessage}
+                                      userInfoToggle={userInfoToggle}
+                                      searchMessageToggle={searchMessageToggle}
+                                      handleMessageSubmit={handleMessageSubmit}
+                                      handleFileSubmit={handleFileSubmit}
+                   />
+               }
+
+
                <SearchMessageContainer showSrc={showSearchContainer} setShowSrc={setShowSearchContainer} chat={chatOrj} user={selectedUser} />
                <InfoContainer showInf={showInfoContainer} setShowInf={setShowInfoContainer} user={selectedUser}/>
                <button className={'dark-mode-button'} onClick={darkModeToggle}>dark mode</button>
+               {
+                   !showChat &&
+                   <div className={'bottom-bar'}>
+                       <div className={'bar-icon'}>
+                           <FontAwesomeIcon icon={faEarthAmericas} />
+                           <span className={'bar-texts'}>Aramalar</span>
+                       </div>
+                       <div className={'bar-icon'}>
+                           <FontAwesomeIcon icon={faPhone} />
+                           <span className={'bar-texts'}>Aramalar</span>
+                       </div>
+                       <div className={'bar-icon'}>
+                           <FontAwesomeIcon icon={faUser} />
+                           <span className={'bar-texts'}>Aramalar</span>
+                       </div>
+                       <div className={'bar-icon'}>
+                           <FontAwesomeIcon icon={faComments} />
+                           <span className={'bar-texts'}>Aramalar</span>
+                       </div>
+                       <div className={'bar-icon'}>
+                           <FontAwesomeIcon icon={faGears} />
+                           <span className={'bar-texts'}>Aramalar</span>
+                       </div>
+                   </div>
+
+               }
+
            </div>
         </div>
     );

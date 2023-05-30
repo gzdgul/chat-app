@@ -6,6 +6,9 @@ import LatestMessages from "./latestMessages";
 import useNotificationList from "../stores/useNotificationList";
 import reporter from "../stores/reporter";
 import useTypingUsers from "../stores/useTypingUsers";
+import useShowChat from "../stores/useShowChat";
+import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 function Connections({userId, userData}) {
     const [userDetail, setUserDetail] = useState(null);
@@ -16,6 +19,7 @@ function Connections({userId, userData}) {
     const setSelectedUser = useSelectUser(state => state.setUser);
     const selectedUser = useSelectUser(state => state.user);
     const addUserToNotificationList = useNotificationList(state => state.addNotificationList);
+    const setShowChat = useShowChat(state => state.setShowChat);
     const removeUserToNotificationList = useNotificationList(state => state.removeNotificationList);
     const notificationList = useNotificationList(state => state.notificationList);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
@@ -54,6 +58,10 @@ function Connections({userId, userData}) {
 
     const handleClick = async () => {
         setSelectedUser(userDetail);
+        let screenWidth = window.innerWidth;
+        if (screenWidth < 900) {
+            setShowChat(true)
+        }
         const elements = document.querySelectorAll(".selected");
         elements.forEach((element) => {
             element.className = "connectionBanner";
@@ -71,6 +79,7 @@ function Connections({userId, userData}) {
     return (
         <div id={userDetail.userID} onClick={handleClick}>
             <div className={!(unreadConnection) ? 'connectionBanner' : 'connectionBanner notification' } ref={connectionContainerRef}>
+
                 <div className={'connection-photo'}><img src={userDetail.avatarLink} alt="avatar"/></div>
                 <div className={'connection-info'}>
                     <div className={'connection-title'}>

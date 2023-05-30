@@ -513,8 +513,10 @@
 .chat-bubble, .chat-bubble-long {
     display: flex;
     flex-direction: row;
-    word-wrap: break-word; /* Alt satıra geçmesini sağlar */
+    word-break: break-all;
+    overflow-wrap: break-word; /* Alt satıra geçmesini sağlar */
     width: fit-content;
+    max-width: 450px;
     padding: 10px;
     margin: 5px 10px;
 
@@ -755,6 +757,7 @@
     color: var(--white);
     padding: 5px 10px;
     border-radius: 10px;
+    z-index: 40;
 }
 
 .progress-bar {
@@ -772,4 +775,10 @@
     height: 100%;
     color: var(--black);
 }
+.bottom-bar {
+    display: none;
+}
 
+.ph-back-arrow {
+    display: none;
+}
