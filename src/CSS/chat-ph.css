@@ -3,7 +3,7 @@
         min-width: 0;
         min-height: 0;
         width: 100vw;
-        height: 100vh;
+        height: 100dvh;
     }
     .chatContainer {
         flex-direction: column;
