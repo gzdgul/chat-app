@@ -272,17 +272,25 @@ function Chat(props) {
         <div className={'screen screenChat'}>
 
            <div className={'chatContainer'}>
-
+               { screenWidth <= 900 && !showChat &&
+               <div className={'header-connections-ph'}>
+                       <label className={'chat-label label-ph'}>Chat</label>
+               </div>
+               }
                {
                    !showChat ?
                        <div className={'connections-container'}>
-                           <div className={'header-connections'}>
-                               <div className={'user-info'} onClick={currUserInfoToggle}>
-                                   <div className={'user-photo'}><img src={currentUserData.avatarLink} alt="avatar"/></div>
-                                   <div className={'user-display-name'}>{getAuth().currentUser?.displayName}</div>
+                           {
+                               screenWidth > 900 &&
+                               <div className={'header-connections'}>
+                                   <div className={'user-info'} onClick={currUserInfoToggle}>
+                                       <div className={'user-photo'}><img src={currentUserData.avatarLink} alt="avatar"/></div>
+                                       <div className={'user-display-name'}>{getAuth().currentUser?.displayName}</div>
+                                   </div>
+                                   <div className={'chat-logo'}></div>
                                </div>
-                               <div className={'chat-logo'}></div>
-                           </div>
+                           }
+
                            {
                                showInfoContainerMedium &&
                                <InfoContainer showInf={showInfoContainerMedium} setShowInf={setShowInfoContainerMedium} user={selectedUser}/>
@@ -293,8 +301,14 @@ function Chat(props) {
                                <SearchMessageContainer showSrc={showSearchContainerMedium} setShowSrc={setShowSearchContainerMedium} chat={chatOrj} user={selectedUser} />
 
                            }
-                           <CurrentUserInfoContainer showCurrUserInf={showCurrInfoContainer} setShowCurrUserInf={setShowCurrInfoContainer} user={currentUserData}/>
-                           <label className={'chat-label'}>Chat</label>
+                           {
+                               screenWidth > 900 &&
+                               <CurrentUserInfoContainer showCurrUserInf={showCurrInfoContainer} setShowCurrUserInf={setShowCurrInfoContainer} user={currentUserData}/>
+
+                           }
+                           {  screenWidth > 900 &&
+                               <label className={'chat-label'}>Chat</label>
+                           }
                            {
                                <div className={'connections'}>
                                    <div className={'search'}>
@@ -382,7 +396,6 @@ function Chat(props) {
                    </div>
 
                }
-
            </div>
         </div>
     );

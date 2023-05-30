@@ -153,7 +153,7 @@ export const setUserData = async (displayName, email,avatarLink) => {
         email: email,
         connections: ['Vd8vr3gobBUrFYt796Wjb5dmzlM2'],//Vd8vr3gobBUrFYt796Wjb5dmzlM2
         avatarLink: avatarLink,
-        latestConnection: 'Vd8vr3gobBUrFYt796Wjb5dmzlM2'
+        latestConnection: '' //'Vd8vr3gobBUrFYt796Wjb5dmzlM2'
     });
     return userdata;
 }
