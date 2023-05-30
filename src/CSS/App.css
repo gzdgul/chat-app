@@ -17,17 +17,12 @@
     background: var(--purple);
     border-radius: 10px;
 }
-html {
-
-    height: -moz-available;          /* WebKit-based browsers will ignore this. */
-    height: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
-    height: fill-available;
+header {
+    height: 100dvh;
 }
 
 body{
     /*font-size: calc(60% + 0.8vmin);*/
-    height: 100vh;
-    height: -webkit-fill-available;
     font-family: 'Manrope', sans-serif;
     --color: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(239,57,51,1) 50%)
 
