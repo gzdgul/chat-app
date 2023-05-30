@@ -12,7 +12,7 @@
         height: 100%;
         min-width: 0;
         max-width: 900px;
-        min-height: 100vh;
+        min-height: 1px;
         margin: 0;
         background-color: var(--pink);
         box-shadow: 0 0 0 0;

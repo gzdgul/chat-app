@@ -17,10 +17,15 @@
     background: var(--purple);
     border-radius: 10px;
 }
-
+root {
+    --viewport-height: 100vh;
+    --viewport-width: 100vw;
+}
 
 body{
     /*font-size: calc(60% + 0.8vmin);*/
+    height: var(--viewport-height);
+    width: var(--viewport-width);
     font-family: 'Manrope', sans-serif;
     --color: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(239,57,51,1) 50%)
 
