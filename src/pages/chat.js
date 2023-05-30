@@ -274,7 +274,7 @@ function Chat(props) {
            <div className={'chatContainer'}>
                { screenWidth <= 900 && !showChat &&
                <div className={'header-connections-ph'}>
-                       <label className={'chat-label label-ph'}>Chat</label>
+                       <label className={'chat-label'}>Sohbetler</label>
                </div>
                }
                {
