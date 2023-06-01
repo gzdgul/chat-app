@@ -10,7 +10,7 @@ import useShowChat from "../stores/useShowChat";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-function Connections({userId, userData}) {
+function Connections({userId, userData, setSearching}) {
     const [userDetail, setUserDetail] = useState(null);
     const [LatestMessageUser, setLatestMessageUser] = useState('');
     const [unreadMessagesList, setUnreadMessagesList] = useState([]);
@@ -61,6 +61,9 @@ function Connections({userId, userData}) {
         let screenWidth = window.innerWidth;
         if (screenWidth < 900) {
             setShowChat(true)
+        }
+        if (setSearching) {
+            setSearching(false)
         }
         const elements = document.querySelectorAll(".selected");
         elements.forEach((element) => {

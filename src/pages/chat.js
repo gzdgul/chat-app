@@ -336,7 +336,7 @@ function Chat(props) {
 
                                    { searching &&
                                        filteredUserData.map((x) => {
-                                           return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID} userData={x}  />
+                                           return <Connections key={'COMP_DATA_CONNECTION_' + x.userID} userId={x.userID} userData={x} setSearching={setSearching} />
                                        })
                                    }
                                    { !searching &&
