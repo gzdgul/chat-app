@@ -513,12 +513,12 @@
 .chat-bubble, .chat-bubble-long {
     display: flex;
     flex-direction: row;
-    word-break: break-all;
+    word-break: break-word;
     overflow-wrap: break-word; /* Alt satıra geçmesini sağlar */
     width: fit-content;
     max-width: 450px;
     padding: 10px;
-    margin: 5px 10px;
+    margin: 3px 10px;
 
 
 }

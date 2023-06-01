@@ -39,8 +39,6 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
     const info = `${sender}, ${new Date(repliedMessage.date).toLocaleString().slice(0,-3)}`
 
     return (
-
-
                 repliedStatus && repliedMessage_
                     ?
                     <div className={'replied-message-container messages'}>

@@ -11,10 +11,13 @@
 }
 .messages {
     width: fit-content;
+
     margin: 20px 10px 0 10px;
 }
 .message {
     font-style: italic;
+    word-break: break-word;
+    overflow-wrap: break-word; /* Alt satıra geçmesini sağlar */
 }
 .info {
     font-size: 0.85rem;

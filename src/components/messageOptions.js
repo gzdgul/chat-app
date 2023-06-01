@@ -18,7 +18,7 @@ function MessageOptions({show, setShow, sender, message, date, currentMessageKey
         setReplyMode(true)
         setMessageKey(currentMessageKey)
         setRepliedMessage(message,date,sender)
-        console.log(currentMessageKey)
+        // console.log(currentMessageKey)
     }
     //onMouseLeave={() => setShow(false)}
     return (

@@ -19,8 +19,13 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
     const selectedMessage = useSelectMessage(state => state.selectedMessage);
     const setShowChat = useShowChat(state => state.setShowChat);
     const chatDiv = useRef(null);
+    const inputRef = useRef(null);
 
-
+    useEffect(() => {
+        if (replyMode) {
+            inputRef.current.focus();
+        }
+    },[replyMode])
     useEffect(() => {  ///CHATTEKİ TYPING YAZISI İÇİN
         const user = typingUsers?.find((y) => y.typerID === selectedUser?.userID)
         setIsTyping(user?.status)
@@ -132,12 +137,10 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
                         <RepliedMessageContainer selectedUser={selectedUser} currentUser={currentUserData}/>
                     }
                     <form className={'testtt'} onSubmit={handleMessageSubmit}>
-                        <input className={'message-input'} type="text" placeholder={'Bir mesaj yazın.'}
+                        <input className={'message-input'} type="text" placeholder={'Bir mesaj yazın.'} ref={inputRef}
                                value={currentMessage}
                                onChange={(e) => {
                                    setCurrentMessage(e.target.value)
-
-
                                }
                                }
                         />

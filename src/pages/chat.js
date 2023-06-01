@@ -154,6 +154,7 @@ function Chat(props) {
              setUnreadMessages(selectedUser.userID,currentMessage)
             if (replyMode) {
                 sendMessage(selectedUser.userID, currentMessage,true, messageKey)
+                setReplyMode(false)
             }
             else {
                 sendMessage(selectedUser.userID, currentMessage)

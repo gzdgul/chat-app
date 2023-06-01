@@ -52,9 +52,9 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
         <div>
             {(sender === 'me') &&
                 <div className={'chat-right'} onMouseLeave={() => {
-                    phScreen
-                        ? setIsPressing(false)
-                        : setShowOptions(false)
+                    // phScreen
+                    //     ? setIsPressing(false) :
+                         setShowOptions(false)
                 }}>
                     <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} message={message} date={date} currentMessageKey={currentMessageKey} />
                     <div className={'testt'}>
@@ -62,11 +62,11 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                             <RepliedMessageContainer repliedStatus={repliedStatus} repliedMessageKey={repliedMessageKey}/>
                         }
                         <div className={`chat-bubble${message.length < 25 ? '' : '-long'} ${showOptions ? 'selected-message' : ''}`}
-                             // onClick={handleClick}
-                             onMouseDown={phScreen ? () => setIsPressing(true) : handleClick }
-                             onMouseUp={ !showOptions ?
-                                 () => setIsPressing(false) : null
-                             }
+                             onClick={handleClick}
+                             // onMouseDown={phScreen ? () => setIsPressing(true) : handleClick }
+                             // onMouseUp={ !showOptions ?
+                             //     () => setIsPressing(false) : null
+                             // }
 
                         >
                             {message.includes('http') && message.includes('firebase')

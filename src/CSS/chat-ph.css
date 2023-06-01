@@ -43,7 +43,13 @@
         transition: 0.2s;
         color: var(--white);
     }
+    .chat-bubble, .chat-bubble-long {
+        width: fit-content;
+        /*max-width: 360px;*/
+        padding: 10px;
+        margin: 3px 10px;
 
+    }
     .testt {
         max-width: 90%;
     }
