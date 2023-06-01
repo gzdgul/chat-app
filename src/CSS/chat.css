@@ -709,19 +709,22 @@
 .testtt {
     display: flex;
     width: 100%;
+    min-height: 35px;
     background-color: var(--gray);
     border-radius: 7px;
 }
-.message-input {
 
+.message-input {
     background-color: transparent;
     color:var(--black);
     width: 100%;
     padding: 5px 20px;
 }
+
 .message-input::placeholder {
     font-size: 0.9rem;
 }
+
 .upload-file {
     display: flex;
     justify-content: center;

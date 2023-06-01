@@ -3,6 +3,8 @@ import '../CSS/replied-message.css';
 import useToggleReplyMode from "../stores/useToggleReplyMode";
 import useSelectUser from "../stores/useSelectUser";
 import {getUserData, listenMessage, snapshotToArray} from "../firebase";
+import {faReply, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}) {
     const selectedUser = useSelectUser(state => state.user);
@@ -42,12 +44,12 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
                 repliedStatus && repliedMessage_
                     ?
                     <div className={'replied-message-container messages'}>
-                        <div className={'replied-icon'}><i className="fa fa-reply"></i></div>
+                        <div className={'replied-icon'}><FontAwesomeIcon icon={faReply} /></div>
                 <div className={'replied-message'}>
                     <div className={'message'}>{
                         repliedMessage_?.message.includes('http')
-                            ? <img style={{
-                                width: '250px'
+                            ? <img className={'img-message'} style={{
+                                width: '100px'
                             }} src={repliedMessage_?.message} alt={repliedMessage_?.message}/>
                             : `“ ${repliedMessage_?.message} ”`
                     }</div>
@@ -62,14 +64,15 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
                     <div className={'replied-message'}>
                         <div className={'message'}>{
                             repliedMessage.message?.includes('http')
-                                ? <img style={{
-                                    width: '250px'
+                                ? <img className={'img-message'} style={{
+                                    width: '100px'
                                 }} src={repliedMessage.message} alt={repliedMessage.message}/>
                                 : `“ ${repliedMessage.message} ”`
                         }</div>
                         <div className={'info'}>{info}</div>
                     </div>
-                    <div className={'cancel-button'} onClick={() => setReplyMode(false)}>✖</div>
+                    <div className={'cancel-button'} onClick={() => setReplyMode(false)}>
+                        <FontAwesomeIcon icon={faXmark} /></div>
                 </div>
 
 

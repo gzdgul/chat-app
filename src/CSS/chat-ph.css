@@ -76,7 +76,10 @@
         border-radius: 0;
 
     }
-
+    .send-button {
+        min-width: 35px;
+        min-height: 35px;
+    }
     .bottom-bar {
         width: 100%;
         /*min-height: 60px;*/

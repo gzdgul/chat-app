@@ -8,8 +8,9 @@ import useTypingUsers from "../stores/useTypingUsers";
 import useFileProgress from "../stores/useFileProgress";
 import useSelectMessage from "../stores/useSelectMessage";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
+import {faChevronLeft, faPaperPlane} from "@fortawesome/free-solid-svg-icons";
 import useShowChat from "../stores/useShowChat";
+import usePhScreenSize from "../stores/usePhScreenSize";
 
 function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage, setCurrentMessage, userInfoToggle, searchMessageToggle, handleMessageSubmit, handleFileSubmit}) {
     const replyMode = useToggleReplyMode(state => state.replyMode);
@@ -18,6 +19,7 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
     const fileProgress = useFileProgress(state => state.fileProgress);
     const selectedMessage = useSelectMessage(state => state.selectedMessage);
     const setShowChat = useShowChat(state => state.setShowChat);
+    const phScreen = usePhScreenSize(state => state.phScreen);
     const chatDiv = useRef(null);
     const inputRef = useRef(null);
 
@@ -154,7 +156,8 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
                     </label>
                 </form>
 
-                <div className={'send-button'} onClick={handleMessageSubmit}>Gönder</div>
+                <div className={'send-button'} onClick={handleMessageSubmit}>
+                    {!phScreen ? 'Gönder' : <FontAwesomeIcon icon={faPaperPlane} /> }</div>
             </div>
         </div>
     );

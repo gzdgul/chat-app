@@ -93,7 +93,7 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                              onClick={handleClick}
                         >
                             {message.includes('http') && message.includes('firebase')
-                                ? <img src={message} alt={message}/>
+                                ? <img className={'img-message'} src={message} alt={message}/>
                                 : message
                             }
                             <span className={'message-date'}>{time}</span>
