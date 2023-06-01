@@ -19,6 +19,7 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
     const fileProgress = useFileProgress(state => state.fileProgress);
     const selectedMessage = useSelectMessage(state => state.selectedMessage);
     const setShowChat = useShowChat(state => state.setShowChat);
+    const showChat = useShowChat(state => state.showChat);
     const phScreen = usePhScreenSize(state => state.phScreen);
     const chatDiv = useRef(null);
     const inputRef = useRef(null);
@@ -80,7 +81,7 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
         setShowChat(false)
     }
     return (
-        <div className={'chat-area-container'}>
+        <div className={`${showChat && 'show-chat-area'} chat-area-container`}>
             <div className={'header-chat-area'}>
                 <div className={'header-chat-user-index'} onClick={userInfoToggle}>
                     <div className={'ph-back-arrow'}

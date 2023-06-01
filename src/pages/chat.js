@@ -284,8 +284,7 @@ function Chat(props) {
                        <label className={'chat-label'}>Sohbetler</label>
                </div>
                }
-               {
-                   !showChat ?
+
                        <div className={'connections-container'}>
                            {
                                screenWidth > 900 &&
@@ -348,20 +347,10 @@ function Chat(props) {
 
                            }
                        </div>
-                       :
-                       <ChatAreaContainer selectedUser={selectedUser} chat={chat}
-                                          currentUserData={currentUserData}
-                                          currentMessage={currentMessage}
-                                          setCurrentMessage={setCurrentMessage}
-                                          userInfoToggle={userInfoToggle}
-                                          searchMessageToggle={searchMessageToggle}
-                                          handleMessageSubmit={handleMessageSubmit}
-                                          handleFileSubmit={handleFileSubmit}
-                       />
 
-               }
+
                {
-                   screenWidth > 900 &&
+                   // screenWidth > 900 &&
                    <ChatAreaContainer selectedUser={selectedUser} chat={chat}
                                       currentUserData={currentUserData}
                                       currentMessage={currentMessage}

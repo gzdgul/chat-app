@@ -1,4 +1,5 @@
 @media (max-width: 900px) {
+
     .screen {
         height: 100vh;
     }
@@ -7,6 +8,8 @@
         min-height: 0;
         width: 100vw;
         height: 100dvh;
+        position: relative;
+        overflow: hidden;
     }
     .chatContainer {
         flex-direction: column;
@@ -17,6 +20,7 @@
         max-width: 900px;
         min-height: 1px;
         margin: 0;
+
         /*background-color: var(--pink);*/
         box-shadow: 0 0 0 0;
     }
@@ -27,13 +31,19 @@
         height: 100%;
         background-color: var(--white);
         display: flex;
+        position: absolute;
+        clip: rect(0, auto, auto, 0);
+        top: 0;
+        left: 100%;
         flex-direction: column;
         align-items: stretch;
         justify-content: space-between;
         border-radius: 0;
         margin: 0;
     }
-
+    .show-chat-area {
+        left: 0;
+    }
     .chat-right .chat-bubble:hover,
     .chat-left .chat-bubble:hover,
     .chat-right .chat-bubble-long:hover,
