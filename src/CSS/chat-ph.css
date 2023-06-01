@@ -17,7 +17,7 @@
         max-width: 900px;
         min-height: 1px;
         margin: 0;
-        background-color: var(--pink);
+        /*background-color: var(--pink);*/
         box-shadow: 0 0 0 0;
     }
     .chat-area-container {
@@ -32,6 +32,16 @@
         justify-content: space-between;
         border-radius: 0;
         margin: 0;
+    }
+
+    .chat-right .chat-bubble:hover,
+    .chat-left .chat-bubble:hover,
+    .chat-right .chat-bubble-long:hover,
+    .chat-left .chat-bubble-long:hover
+    {
+        background-color: rgba(253, 1, 79, 0.72);
+        transition: 0.2s;
+        color: var(--white);
     }
 
     .chat-user-info-container, .chat-user-search-container {

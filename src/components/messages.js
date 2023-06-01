@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MessageOptions from "./messageOptions";
 import RepliedMessageContainer from "./repliedMessageContainer";
+import usePhScreenSize from "../stores/usePhScreenSize";
 // import useToggleReplyMode from "../stores/useToggleReplyMode";
 
 
@@ -13,19 +14,47 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
     const formattedMinute = (minute < 10 ? "0" : "") + minute;
     const time = [formattedHour,' : ', formattedMinute]
     const [showOptions, setShowOptions] = useState(false)
+    const [isPressing, setIsPressing] = useState(false);
+    const phScreen = usePhScreenSize(state => state.phScreen);
 
 
+    useEffect(() => {
+        let pressTimer;
+        const startPress = () => {
+            pressTimer = setTimeout(() => {
+                setShowOptions(true)
+            }, 800); // 800 milisaniye basılı tutma süresi
+        };
+
+        const endPress = () => {
+            clearTimeout(pressTimer);
+            setShowOptions(false)
+        };
+
+        if (isPressing) {
+            startPress();
+        } else {
+            endPress();
+        }
+
+        return () => {
+            endPress();
+        };
+    }, [isPressing]);
     const handleClick = (e) => {
         setShowOptions(!showOptions)
         console.log(currentMessageKey)
         console.log(message)
     }
 
+
     return (
         <div>
             {(sender === 'me') &&
                 <div className={'chat-right'} onMouseLeave={() => {
-                    setShowOptions(false)
+                    phScreen
+                        ? setIsPressing(false)
+                        : setShowOptions(false)
                 }}>
                     <MessageOptions show={showOptions} setShow={setShowOptions} sender={sender} message={message} date={date} currentMessageKey={currentMessageKey} />
                     <div className={'testt'}>
@@ -33,7 +62,12 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                             <RepliedMessageContainer repliedStatus={repliedStatus} repliedMessageKey={repliedMessageKey}/>
                         }
                         <div className={`chat-bubble${message.length < 25 ? '' : '-long'} ${showOptions ? 'selected-message' : ''}`}
-                             onClick={handleClick}
+                             // onClick={handleClick}
+                             onMouseDown={phScreen ? () => setIsPressing(true) : handleClick }
+                             onMouseUp={ !showOptions ?
+                                 () => setIsPressing(false) : null
+                             }
+
                         >
                             {message.includes('http') && message.includes('firebase')
                                 ? <img src={message} alt={message}/>

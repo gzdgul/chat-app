@@ -29,6 +29,7 @@ import RepliedMessageContainer from "../components/repliedMessageContainer";
 import {faComments, faEarthAmericas, faGears, faPhone, faUser} from "@fortawesome/free-solid-svg-icons";
 import ChatAreaContainer from "../components/chatAreaContainer";
 import useShowChat from "../stores/useShowChat";
+import usePhScreenSize from "../stores/usePhScreenSize";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
@@ -58,6 +59,7 @@ function Chat(props) {
     const messageKey = useToggleReplyMode(state => state.messageKey);
     const replyMode = useToggleReplyMode(state => state.replyMode);
     const setReplyMode = useToggleReplyMode(state => state.setReplyMode);
+    const setPhScreen = usePhScreenSize(state => state.setPhScreen);
     const setReporterBird = reporter(state => state.setReporter); //HABERCİ KUŞ
     const [chatOrj, setChatOrj] = useState([]);
     const [chat, setChat] = useState([]);
@@ -65,6 +67,9 @@ function Chat(props) {
 
     useEffect(() => {
         setScreenWidth(window.innerWidth)
+        if (window.innerWidth <= 900) {
+            setPhScreen(true)
+        }
         console.log('SCREEN',window.innerWidth)
     },[window.innerWidth])
 
