@@ -150,15 +150,16 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
                                }
                                }
                         />
+                        <form className={'upload-file'} >
+                            <input type="file" id="myFile" style={{display: "none"}} onChange={handleFileSubmit}/>
+                            <label htmlFor="myFile">
+                                <div className={'upload-file-icon'}>📎</div>
+                            </label>
+                        </form>
                     </form>
+
                 </div>
-                <form className={'upload-file'} >
-                    {/*<div className={'upload-file-icon'}>📎</div>*/}
-                    <input type="file" id="myFile" style={{display: "none"}} onChange={handleFileSubmit}/>
-                    <label htmlFor="myFile">
-                        <div className={'upload-file-icon'}>📎</div>
-                    </label>
-                </form>
+
 
                 <div className={'send-button'} onClick={handleMessageSubmit}>
                     {!phScreen ? 'Gönder' : <FontAwesomeIcon icon={faPaperPlane} /> }</div>
