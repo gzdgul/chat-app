@@ -1,4 +1,7 @@
 @media (max-width: 900px) {
+    .screen {
+        height: 100vh;
+    }
     .screenChat {
         min-width: 0;
         min-height: 0;
