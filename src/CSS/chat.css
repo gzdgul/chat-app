@@ -762,7 +762,7 @@
     color: var(--white);
     padding: 5px 10px;
     border-radius: 10px;
-    z-index: 40;
+    z-index: 170;
 }
 
 .progress-bar {
@@ -786,4 +786,8 @@
 
 .ph-back-arrow {
     display: none;
+}
+
+.img-message {
+    border-radius: 10px;
 }

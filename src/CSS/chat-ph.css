@@ -46,9 +46,12 @@
     .chat-bubble, .chat-bubble-long {
         width: fit-content;
         /*max-width: 360px;*/
-        padding: 10px;
-        margin: 3px 10px;
+        padding: 4px 10px;
 
+
+    }
+    .chat-bubble-long{
+        padding: 10px 10px;
     }
     .testt {
         max-width: 90%;
@@ -67,7 +70,7 @@
     }
     .connections-container {
         width: 100%;
-        height: 84%;
+        height: 82%;
         /*margin: 100px 0 90px 0;*/
         min-width: 0;
         border-radius: 0;
@@ -76,14 +79,15 @@
 
     .bottom-bar {
         width: 100%;
-        min-height: 60px;
-        height: 8%;
+        /*min-height: 60px;*/
+        height: 10%;
         background-color: var(--gray);
         display: flex;
         z-index: 80;
         justify-content: space-around;
         bottom: 0;
         padding-top: 10px;
+
     }
     .bar-icon {
         width: 19%;
@@ -99,6 +103,7 @@
     .bar-texts {
         font-size: 0.7rem;
         font-weight: bold;
+        padding: 5px;
     }
     .dark-mode-button {
         top: 0;
@@ -112,7 +117,7 @@
         align-items: end;
         width: 100%;
         height: 8%;
-        min-height: 60px;
+        /*min-height: 60px;*/
         background-color: var(--white);
         z-index: 90;
         top: 0;

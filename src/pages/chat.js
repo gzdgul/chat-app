@@ -30,6 +30,7 @@ import {faComments, faEarthAmericas, faGears, faPhone, faUser} from "@fortawesom
 import ChatAreaContainer from "../components/chatAreaContainer";
 import useShowChat from "../stores/useShowChat";
 import usePhScreenSize from "../stores/usePhScreenSize";
+import BottomBar from "../components/bottomBar";
 
 function Chat(props) {
     const [otoMessageCounter, setOtoMessageCounter] = useState(['1'])
@@ -377,30 +378,7 @@ function Chat(props) {
                <InfoContainer showInf={showInfoContainer} setShowInf={setShowInfoContainer} user={selectedUser}/>
                <button className={'dark-mode-button'} onClick={darkModeToggle}>dark mode</button>
                {
-                   !showChat &&
-                   <div className={'bottom-bar'}>
-                       <div className={'bar-icon'}>
-                           <FontAwesomeIcon icon={faEarthAmericas} />
-                           <span className={'bar-texts'}>Aramalar</span>
-                       </div>
-                       <div className={'bar-icon'}>
-                           <FontAwesomeIcon icon={faPhone} />
-                           <span className={'bar-texts'}>Aramalar</span>
-                       </div>
-                       <div className={'bar-icon'}>
-                           <FontAwesomeIcon icon={faUser} />
-                           <span className={'bar-texts'}>Aramalar</span>
-                       </div>
-                       <div className={'bar-icon'}>
-                           <FontAwesomeIcon icon={faComments} />
-                           <span className={'bar-texts'}>Aramalar</span>
-                       </div>
-                       <div className={'bar-icon'}>
-                           <FontAwesomeIcon icon={faGears} />
-                           <span className={'bar-texts'}>Aramalar</span>
-                       </div>
-                   </div>
-
+                   !showChat && <BottomBar/>
                }
            </div>
         </div>
