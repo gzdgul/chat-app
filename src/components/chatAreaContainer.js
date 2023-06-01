@@ -11,6 +11,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faPaperPlane} from "@fortawesome/free-solid-svg-icons";
 import useShowChat from "../stores/useShowChat";
 import usePhScreenSize from "../stores/usePhScreenSize";
+import useSelectUser from "../stores/useSelectUser";
 
 function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage, setCurrentMessage, userInfoToggle, searchMessageToggle, handleMessageSubmit, handleFileSubmit}) {
     const replyMode = useToggleReplyMode(state => state.replyMode);
@@ -18,6 +19,7 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
     const [isTyping, setIsTyping] = useState(false)
     const fileProgress = useFileProgress(state => state.fileProgress);
     const selectedMessage = useSelectMessage(state => state.selectedMessage);
+    const setSelectedUser = useSelectUser(state => state.setUser);
     const setShowChat = useShowChat(state => state.setShowChat);
     const showChat = useShowChat(state => state.showChat);
     const phScreen = usePhScreenSize(state => state.phScreen);
@@ -79,6 +81,7 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
     }
     const handleClickBackPH = () => {
         setShowChat(false)
+        setSelectedUser(null)
     }
     return (
         <div className={`${showChat && 'show-chat-area'} chat-area-container`}>

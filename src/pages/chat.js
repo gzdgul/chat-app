@@ -80,7 +80,7 @@ function Chat(props) {
             setConnections(response.find(x => x.userID === getAuth().currentUser.uid).connections);
             setCurrentUserData(response.find(x => x.userID === getAuth().currentUser.uid));
             const latestConnID = response.find(x => x.userID === getAuth().currentUser.uid).latestConnection;
-            (latestConnID) && getUserData(latestConnID).then((response) => setSelectedUser(response)) // !== null
+            // (latestConnID) && getUserData(latestConnID).then((response) => setSelectedUser(response)) // !== null
 
         });
 
