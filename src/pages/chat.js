@@ -326,7 +326,7 @@ function Chat(props) {
                                                       placeholder={'Aratın veya yeni bir sohbet başlatın'}
                                                       onChange={(e) => {
                                                           (e.target.value.length > 0) ? setSearching(true) : setSearching(false)
-                                                          setFilteredUserData(allUserData.filter((x) => x.displayName.includes(e.target.value) || x.email.includes(e.target.value)))
+                                                          setFilteredUserData(allUserData.filter((x) => x.displayName.toLowerCase().includes(e.target.value.toLowerCase()) || x.email.includes(e.target.value.toLowerCase())))
                                                       } }
                                                />
 
