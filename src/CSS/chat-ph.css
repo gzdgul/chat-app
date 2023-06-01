@@ -44,6 +44,10 @@
         color: var(--white);
     }
 
+    .testt {
+        max-width: 90%;
+    }
+
     .chat-user-info-container, .chat-user-search-container {
         display: none;
         width: 0;
