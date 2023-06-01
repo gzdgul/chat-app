@@ -551,7 +551,7 @@
     background-color: var(--pink);
     z-index: 200;
     pointer-events: none;
-    transition:  opacity 0.4s, scale 0.4s 0.4s, top 0.5s;
+    transition:  opacity 0.3s, scale 0.01s 0.3s, top 0.3s;
 }
 .friend {
     color: var(--white);
@@ -567,6 +567,7 @@
     cursor: pointer;
     padding: 2px 6px;
     border-radius: 20px;
+    color: #ffffff;
 }
 .showOpt {
     position: absolute;
@@ -575,7 +576,7 @@
     pointer-events: auto;
     scale: 100%;
     opacity: 1;
-    transition: scale 0.5s, top 0.5s, opacity 0.2s;
+    transition: scale 0.01s, top 0.3s, opacity 0.3s;
 }
 
 
