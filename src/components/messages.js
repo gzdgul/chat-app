@@ -4,7 +4,6 @@ import RepliedMessageContainer from "./repliedMessageContainer";
 import usePhScreenSize from "../stores/usePhScreenSize";
 // import useToggleReplyMode from "../stores/useToggleReplyMode";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-// import gm from 'gm';
 
 
 
@@ -22,19 +21,6 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
     const [loaded, setLoaded] = useState(false);
     const phScreen = usePhScreenSize(state => state.phScreen);
 
-    // useEffect(() => {
-    //     const processImage = () => {
-    //         gm('test.jpg')
-    //             .resize(250, 250)
-    //             .colors(1)
-    //             .toBuffer('RGB', function (error, buffer) {
-    //                 console.log(buffer.slice(0, 3));
-    //                 // Buffer'i kullanarak istediğiniz işlemleri yapabilirsiniz
-    //             });
-    //     };
-    //
-    //     processImage();
-    // }, []);
 
     useEffect(() => {
         let pressTimer;
@@ -87,15 +73,15 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                              // }
 
                         >
-                            {message.includes('http') && message.includes('firebase')
+                            { (message.url)
                                 ? <LazyLoadImage className={'img-message'}
-                                                 src={message}
-                                                 width={!loaded && 250} height={!loaded && 350}
-                                                 afterLoad={() => {setLoaded(true)}}
+                                                 src={message.url}
+                                                 width={message.width} height={message.height}
+                                                 // afterLoad={() => {setLoaded(true)}}
                                     // threshold={100}
-                                                 effect={!loaded && 'blur'}
-                                                 placeholder={<div>Loading...</div>}
-                                                 // placeholderSrc={'https://i.ibb.co/RCbggPd/previewo.png'}
+                                    //              effect={!loaded && 'blur'}
+                                    //              placeholder={<div>Loading...</div>}
+                                    //              placeholderSrc={'https://i.ibb.co/RCbggPd/previewo.png'}
                                 />
                                 : message
                             }
@@ -118,15 +104,15 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                         <div className={`chat-bubble${message.length < 25 ? '' : '-long'} ${showOptions ? 'selected-message' : ''}`}
                              onClick={handleClick}
                         >
-                            {message.includes('http') && message.includes('firebase')
+                            {(message.url)
                                 ? <LazyLoadImage className={'img-message'}
-                                                 src={message}
-                                                 width={!loaded && 250} height={350}
-                                                 afterLoad={() => {setLoaded(true)}}
+                                                 src={message.url}
+                                                 width={message.width} height={message.height}
+                                                 // afterLoad={() => {setLoaded(true)}}
                                                  // threshold={100}
-                                                 effect={!loaded && 'blur'}
-                                                 placeholder={<div>Loading...</div>}
-                                                 placeholderSrc={'https://i.ibb.co/RCbggPd/previewo.png'}
+                                                 // // effect={!loaded && 'blur'}
+                                                 // placeholder={<div>Loading...</div>}
+                                                 // placeholderSrc={'https://i.ibb.co/RCbggPd/previewo.png'}
                                 />
                                 : message
                             }

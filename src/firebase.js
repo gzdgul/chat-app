@@ -43,6 +43,12 @@ export const listImages = async (recieverID) => {
     const currentUserID = auth.currentUser.uid
     const listRef = sRef(storage, `files/${currentUserID}`);
     const imgList = [];
+    const obj = {
+        image: "https://firebasestorage.googleapis.com/v0/b/chat-b8b69.appspot.com/o/files%2FK1ryhFed9RQf6qnrZTQXcbxYwbw2%2F2023-06-03T17%3A50%3A53.067Z?alt=media&token=38817043-9c23-41f1-aea3-802302f66ebe",
+        placeholderImg: "https://firebasestorage.googleapis.com/v0/b/chat-b8b69.appspot.com/o/files%2FK1ryhFed9RQf6qnrZTQXcbxYwbw2%2F2023-06-03T17%3A50%3A53.067Z?alt=media&token=38817043-9c23-41f1-aea3-802302f66ebe",
+        width: 300,
+        height: 500
+    }
 
     try {
         const res = await listAll(listRef);
@@ -83,6 +89,7 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
     return new Promise((resolve, reject) => {
          uploadTask.on('state_changed',
             (snapshot) => {
+                console.log('SDFKHDSFLKDHSFLKHDSLKFHDSLFHDSHFL',snapshot.metadata)
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.log('Upload is ' + Math.floor(progress)  + '% done');
                 onProgress(Math.floor(progress)); // İlerleme durumunu geri çağırım işlevi aracılığıyla aktar
@@ -93,10 +100,25 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
                 reject(error)
             },
             async () => {
-
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    const img = new Image();
+
+                    img.onload = function() {
+                        const width = this.width;
+                        const height = this.height;
+                        const obj = {
+                            url: downloadURL,
+                            width: this.width,
+                            height: this.height
+                        }
+                        sendMessage(recieverID, obj)
+                        console.log('Genişlik:', width);
+                        console.log('Yükseklik:', height);
+                    };
+
+                    img.src = downloadURL;
                     console.log('File available at', downloadURL);
-                    sendMessage(recieverID, downloadURL)
+
                 });
                 getDownloadURL(recieverUploadTask.snapshot.ref).then((downloadURL) => {
                     console.log('File available at', downloadURL);
@@ -113,6 +135,9 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
                 console.log('Oluşturma zamanı: ' + metadata.timeCreated);
                 console.log('Son değiştirme zamanı: ' + metadata.updated);
                 console.log('TESTTTTTTTTTTTT: ' + metadata.customMetadata.sender);
+                console.log('FHGFH************ıhjık***************: ', metadata);
+                console.log('FHGFH************ıhjık***************: ' + metadata.downloadTokens);
+
             }).catch(function(error) {
                 console.log('Dosya detaylarını alırken bir hata oluştu: ' + error.message);
             });
