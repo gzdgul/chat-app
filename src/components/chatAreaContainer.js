@@ -40,7 +40,7 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
         chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
         setTimeout(() => {
             chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
-        },1000)
+        },10)
     }, [chat])
 
     useEffect(() => {

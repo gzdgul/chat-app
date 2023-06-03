@@ -3,6 +3,10 @@ import MessageOptions from "./messageOptions";
 import RepliedMessageContainer from "./repliedMessageContainer";
 import usePhScreenSize from "../stores/usePhScreenSize";
 // import useToggleReplyMode from "../stores/useToggleReplyMode";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+// import gm from 'gm';
+
+
 
 
 function Messages({message, date, sender, repliedStatus, repliedMessageKey, currentMessageKey}) {
@@ -15,8 +19,22 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
     const time = [formattedHour,' : ', formattedMinute]
     const [showOptions, setShowOptions] = useState(false)
     const [isPressing, setIsPressing] = useState(false);
+    const [loaded, setLoaded] = useState(false);
     const phScreen = usePhScreenSize(state => state.phScreen);
 
+    // useEffect(() => {
+    //     const processImage = () => {
+    //         gm('test.jpg')
+    //             .resize(250, 250)
+    //             .colors(1)
+    //             .toBuffer('RGB', function (error, buffer) {
+    //                 console.log(buffer.slice(0, 3));
+    //                 // Buffer'i kullanarak istediğiniz işlemleri yapabilirsiniz
+    //             });
+    //     };
+    //
+    //     processImage();
+    // }, []);
 
     useEffect(() => {
         let pressTimer;
@@ -70,7 +88,15 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
 
                         >
                             {message.includes('http') && message.includes('firebase')
-                                ? <img className={'img-message'} src={message} alt={message}/>
+                                ? <LazyLoadImage className={'img-message'}
+                                                 src={message}
+                                                 width={!loaded && 250} height={!loaded && 350}
+                                                 afterLoad={() => {setLoaded(true)}}
+                                    // threshold={100}
+                                                 effect={!loaded && 'blur'}
+                                                 placeholder={<div>Loading...</div>}
+                                                 // placeholderSrc={'https://i.ibb.co/RCbggPd/previewo.png'}
+                                />
                                 : message
                             }
                             <span className={'message-date'}>{time}</span>
@@ -93,7 +119,15 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                              onClick={handleClick}
                         >
                             {message.includes('http') && message.includes('firebase')
-                                ? <img className={'img-message'} src={message} alt={message}/>
+                                ? <LazyLoadImage className={'img-message'}
+                                                 src={message}
+                                                 width={!loaded && 250} height={350}
+                                                 afterLoad={() => {setLoaded(true)}}
+                                                 // threshold={100}
+                                                 effect={!loaded && 'blur'}
+                                                 placeholder={<div>Loading...</div>}
+                                                 placeholderSrc={'https://i.ibb.co/RCbggPd/previewo.png'}
+                                />
                                 : message
                             }
                             <span className={'message-date'}>{time}</span>
