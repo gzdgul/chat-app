@@ -316,18 +316,19 @@ export const signout = async () => {
 
 export const sendMessage = (recieverUserId, message, replyStatus = false ,key) => {
     push(chatsDatabaseRef, {
-        senderUserId: auth.currentUser.uid,
-        recieverUserId: recieverUserId,
-        message: message,
-        date: new Date().toISOString(),
-        replied: replyStatus,
-        repliedMessageKey: key ? key : null,
-        timestamp: serverTimestamp()
+        'senderUserId': auth.currentUser.uid,
+        'recieverUserId': recieverUserId,
+        'message': message,
+        'date': new Date().toISOString(),
+        'replied': replyStatus,
+        'repliedMessageKey': key ? key : null
+
     })
     // const { chatData } = setDoc(doc(db, "chats", auth.currentUser.uid, recieverUserId), {
     //     userID: auth.currentUser.uid,
     //     message: message
     // });
+    // timestamp: serverTimestamp()
 }
 
 export const setTyping = async (recieverUserId, status) => {
