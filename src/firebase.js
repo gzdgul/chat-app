@@ -43,18 +43,18 @@ export const listenMessage = (snapshotFunc) => {
     onValue(chatsDatabaseRef, snapshotFunc);
 };
 
-export const loadMoreMessages = (page,snapshotFunc) => {
-    const pageSize = 10; // Her sayfada görüntülenecek mesaj sayısı
-
-    const queryRef = query(
-        chatsDatabaseRef,
-        orderByChild('timestamp'), // Sıralama için kullanılacak alan
-        startAt(10),
-        limitToFirst(pageSize * (page)) // Sayfa numarasına göre başlangıç indeksi
-    );
-
-    onValue(queryRef, snapshotFunc);
-};
+// export const loadMoreMessages = (page,snapshotFunc) => {
+//     const pageSize = 10; // Her sayfada görüntülenecek mesaj sayısı
+//
+//     const queryRef = query(
+//         chatsDatabaseRef,
+//         orderByChild('timestamp'), // Sıralama için kullanılacak alan
+//         startAt(10),
+//         limitToFirst(pageSize * (page)) // Sayfa numarasına göre başlangıç indeksi
+//     );
+//
+//     onValue(queryRef, snapshotFunc);
+// };
 export const sendFiles = async (fileInput,recieverID,onProgress) => {
     const currentUserID = auth.currentUser.uid
     if (!fileInput.files[0]) {

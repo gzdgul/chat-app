@@ -8,7 +8,7 @@ import { LazyLoadImage, trackWindowScroll  } from "react-lazy-load-image-compone
 
 
 
-function Messages({message, date, sender, repliedStatus, repliedMessageKey, currentMessageKey, scrollPosition}) {
+function Messages({message, date, sender, repliedStatus, repliedMessageKey, currentMessageKey}) {
     // const setRepliedMessage = useToggleReplyMode(state => state.setRepliedMessage);
     const dateObj = new Date(date);
     const hour = dateObj.getHours();
@@ -79,8 +79,6 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                                                  key={message.placeholderUrl}
                                                  placeholderSrc={message.placeholderUrl}
                                                  alt={message.placeholderUrl}
-                                                 scrollPosition={scrollPosition}
-
                                                  afterLoad={() => {setLoaded(true)}}
                                                  effect={!loaded && 'blur'}
                                                  width={message.width} height={message.height}
@@ -137,4 +135,4 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
     );
 }
 
-export default trackWindowScroll (Messages) ;
+export default  Messages ;
