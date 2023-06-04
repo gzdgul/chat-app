@@ -76,11 +76,11 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                             { (message.url)
                                 ? <LazyLoadImage className={'img-message'}
                                                  src={message.url}
-                                                 key={message.placeholderUrl}
-                                                 placeholderSrc={message.placeholderUrl}
-                                                 alt={message.placeholderUrl}
-                                                 afterLoad={() => {setLoaded(true)}}
-                                                 effect={!loaded && 'blur'}
+                                                 // key={message.placeholderUrl}
+                                                 // placeholderSrc={message.placeholderUrl}
+                                                 // alt={message.placeholderUrl}
+                                                 // afterLoad={() => {setLoaded(true)}}
+                                                 // effect={!loaded && 'blur'}
                                                  width={message.width} height={message.height}
 
                                 />
@@ -109,8 +109,8 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                                 ? <LazyLoadImage className={'img-message'}
                                                 src={message.url}
                                                 width={message.width} height={message.height}
-                                                afterLoad={() => {setLoaded(true)}}
-                                                effect={!loaded && 'blur'}
+                                                // afterLoad={() => {setLoaded(true)}}
+                                                // effect={!loaded && 'blur'}
                                     // placeholderSrc={message.url}
                                 />
                                 : message
