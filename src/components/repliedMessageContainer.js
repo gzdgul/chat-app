@@ -30,6 +30,7 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
             listenMessage(async (snapshot) => {
                 let result = snapshotToArray(snapshot);
                 let replied = result.find((x) => x.key === repliedMessageKey)
+                console.log('replied****************',replied)
                 console.log(replied)
                 setRepliedMessage_(replied)
                 await getUserData(replied.senderUserId).then((x) => setSender_(x.displayName))
@@ -47,10 +48,10 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
                         <div className={'replied-icon'}><FontAwesomeIcon icon={faReply} /></div>
                 <div className={'replied-message'}>
                     <div className={'message'}>{
-                        repliedMessage_?.message.includes('http')
+                        repliedMessage_?.message.url
                             ? <img className={'img-message'} style={{
                                 width: '100px'
-                            }} src={repliedMessage_?.message} alt={repliedMessage_?.message}/>
+                            }} src={repliedMessage_?.message.url} alt={repliedMessage_?.message.url}/>
                             : `“ ${repliedMessage_?.message} ”`
                     }</div>
                     <div className={'info'}>{
@@ -63,10 +64,10 @@ function RepliedMessageContainer({currentUser, repliedStatus, repliedMessageKey}
                     <div className={'replied-icon'}><i className="fa fa-reply"></i></div>
                     <div className={'replied-message'}>
                         <div className={'message'}>{
-                            repliedMessage.message?.includes('http')
+                            repliedMessage?.message.url
                                 ? <img className={'img-message'} style={{
                                     width: '100px'
-                                }} src={repliedMessage.message} alt={repliedMessage.message}/>
+                                }} src={repliedMessage.message.url} alt={repliedMessage?.message.url}/>
                                 : `“ ${repliedMessage.message} ”`
                         }</div>
                         <div className={'info'}>{info}</div>
