@@ -6,7 +6,7 @@ import {
     getAllUserData, getLatestMessages,
     getUserData,
     listenMessage, listenTyping, listImages, sendBOTMessage, sendFiles,
-    sendMessage, setBOTMessageLTS, setLatestConnection, setLatestMessages, setTyping, setUnreadMessages,
+    sendMessage, setBOTMessageLTS, loadMoreMessages, setLatestMessages, setTyping, setUnreadMessages,
     snapshotToArray, updateLatestConnection,
     updateUserConnections
 } from "../firebase";

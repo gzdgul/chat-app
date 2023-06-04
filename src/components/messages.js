@@ -3,12 +3,12 @@ import MessageOptions from "./messageOptions";
 import RepliedMessageContainer from "./repliedMessageContainer";
 import usePhScreenSize from "../stores/usePhScreenSize";
 // import useToggleReplyMode from "../stores/useToggleReplyMode";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import { LazyLoadImage, trackWindowScroll  } from "react-lazy-load-image-component";
 
 
 
 
-function Messages({message, date, sender, repliedStatus, repliedMessageKey, currentMessageKey}) {
+function Messages({message, date, sender, repliedStatus, repliedMessageKey, currentMessageKey, scrollPosition}) {
     // const setRepliedMessage = useToggleReplyMode(state => state.setRepliedMessage);
     const dateObj = new Date(date);
     const hour = dateObj.getHours();
@@ -76,12 +76,15 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                             { (message.url)
                                 ? <LazyLoadImage className={'img-message'}
                                                  src={message.url}
+                                                 key={message.placeholderUrl}
+                                                 placeholderSrc={message.placeholderUrl}
+                                                 alt={message.placeholderUrl}
+                                                 scrollPosition={scrollPosition}
+
+                                                 afterLoad={() => {setLoaded(true)}}
+                                                 effect={!loaded && 'blur'}
                                                  width={message.width} height={message.height}
-                                                 // afterLoad={() => {setLoaded(true)}}
-                                    // threshold={100}
-                                    //              effect={!loaded && 'blur'}
-                                    //              placeholder={<div>Loading...</div>}
-                                    //              placeholderSrc={'https://i.ibb.co/RCbggPd/previewo.png'}
+
                                 />
                                 : message
                             }
@@ -106,13 +109,11 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
                         >
                             {(message.url)
                                 ? <LazyLoadImage className={'img-message'}
-                                                 src={message.url}
-                                                 width={message.width} height={message.height}
-                                                 // afterLoad={() => {setLoaded(true)}}
-                                                 // threshold={100}
-                                                 // // effect={!loaded && 'blur'}
-                                                 // placeholder={<div>Loading...</div>}
-                                                 // placeholderSrc={'https://i.ibb.co/RCbggPd/previewo.png'}
+                                                src={message.url}
+                                                width={message.width} height={message.height}
+                                                afterLoad={() => {setLoaded(true)}}
+                                                effect={!loaded && 'blur'}
+                                    // placeholderSrc={message.url}
                                 />
                                 : message
                             }
@@ -136,4 +137,4 @@ function Messages({message, date, sender, repliedStatus, repliedMessageKey, curr
     );
 }
 
-export default Messages;
+export default trackWindowScroll (Messages) ;

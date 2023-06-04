@@ -7,8 +7,8 @@ import {
     signOut,
     updateProfile
 } from "firebase/auth";
-import {arrayUnion, collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc} from "firebase/firestore";
-import {getDatabase, onValue, push, ref, set} from "firebase/database";
+import {arrayUnion, collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc} from "firebase/firestore";
+import {getDatabase, onValue, push, ref, set, serverTimestamp, query, orderByChild, startAt,limitToFirst } from "firebase/database";
 import { getStorage, uploadBytesResumable, getDownloadURL,getMetadata, listAll } from "firebase/storage";
 import { ref as sRef } from 'firebase/storage';
 import ImageResizer from 'react-image-file-resizer';
@@ -39,7 +39,22 @@ const metadata = {
     contentType: 'image/jpeg'
 };
 
+export const listenMessage = (snapshotFunc) => {
+    onValue(chatsDatabaseRef, snapshotFunc);
+};
 
+export const loadMoreMessages = (page,snapshotFunc) => {
+    const pageSize = 10; // Her sayfada görüntülenecek mesaj sayısı
+
+    const queryRef = query(
+        chatsDatabaseRef,
+        orderByChild('timestamp'), // Sıralama için kullanılacak alan
+        startAt(10),
+        limitToFirst(pageSize * (page)) // Sayfa numarasına göre başlangıç indeksi
+    );
+
+    onValue(queryRef, snapshotFunc);
+};
 export const sendFiles = async (fileInput,recieverID,onProgress) => {
     const currentUserID = auth.currentUser.uid
     if (!fileInput.files[0]) {
@@ -52,7 +67,22 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
             800, // Max genişlik
             1000, // Max yükseklik
             'JPEG', // Çıktı formatı
-            80, // Kalite (0-100)
+            90, // Kalite (0-100)
+            0, // Döndürme derecesi
+            (uri) => {
+                // Küçültülen fotoğrafın veri URL'sini kullanabilirsiniz.
+                resolve(dataURLtoFile(uri, file.name));
+            },
+            'base64' // Veri URL formatı
+        );
+    });
+    const placeholder = await new Promise((resolve) => {
+        ImageResizer.imageFileResizer(
+            file,
+            400, // Max genişlik
+            400, // Max yükseklik
+            'JPEG', // Çıktı formatı
+            1, // Kalite (0-100)
             0, // Döndürme derecesi
             (uri) => {
                 // Küçültülen fotoğrafın veri URL'sini kullanabilirsiniz.
@@ -72,14 +102,15 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
     };
     const storageRef = sRef(storage, `files/${currentUserID}/` + fileName);
     const uploadTask = uploadBytesResumable(storageRef, resizedFile, metadata);
-    const recieverStorageRef = sRef(storage, `files/${recieverID}/` + fileName);
-    const recieverUploadTask = uploadBytesResumable(recieverStorageRef, resizedFile, metadata);
+    const placeholderStorageRef = sRef(storage, `placeholders/` + fileName + 'placeholder');
+    const placeholderUploadTask = uploadBytesResumable(placeholderStorageRef, placeholder, metadata);
+    // const recieverStorageRef = sRef(storage, `files/${recieverID}/` + fileName);
+    // const recieverUploadTask = uploadBytesResumable(recieverStorageRef, resizedFile, metadata);
     return new Promise((resolve, reject) => {
          uploadTask.on('state_changed',
             (snapshot) => {
-                console.log('SDFKHDSFLKDHSFLKHDSLKFHDSLFHDSHFL',snapshot.metadata)
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + Math.floor(progress)  + '% done');
+                // console.log('Upload is ' + Math.floor(progress)  + '% done');
                 onProgress(Math.floor(progress)); // İlerleme durumunu geri çağırım işlevi aracılığıyla aktar
 
             },
@@ -88,29 +119,31 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
                 reject(error)
             },
             async () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    const img = new Image();
 
-                    img.onload = function() {
-                        const width = this.width;
-                        const height = this.height;
-                        const obj = {
-                            url: downloadURL,
-                            width: this.width,
-                            height: this.height
-                        }
-                        sendMessage(recieverID, obj)
-                        console.log('Genişlik:', width);
-                        console.log('Yükseklik:', height);
-                    };
+                const placeholderUrl = await getDownloadURL(placeholderUploadTask.snapshot.ref)
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
 
-                    img.src = downloadURL;
-                    console.log('File available at', downloadURL);
+                const img = new Image();
+                img.onload = function() {
+                    const width = this.width;
+                    const height = this.height;
+                    const obj = {
+                        url: downloadURL,
+                        placeholderUrl: placeholderUrl,
+                        width: this.width,
+                        height: this.height
+                    }
+                    sendMessage(recieverID, obj)
+                    console.log('Genişlik:', width);
+                    console.log('Yükseklik:', height);
+                };
 
-                });
-                getDownloadURL(recieverUploadTask.snapshot.ref).then((downloadURL) => {
-                    console.log('File available at', downloadURL);
-                });
+                img.src = downloadURL;
+                img.ariaPlaceholder = placeholderUrl;
+                console.log('File available at', downloadURL);
+                // getDownloadURL(recieverUploadTask.snapshot.ref).then((downloadURL) => {
+                //     console.log('File available at', downloadURL);
+                // });
                 resolve();
             }
 
@@ -283,18 +316,20 @@ export const signout = async () => {
 
 export const sendMessage = (recieverUserId, message, replyStatus = false ,key) => {
     push(chatsDatabaseRef, {
-        'senderUserId': auth.currentUser.uid,
-        'recieverUserId': recieverUserId,
-        'message': message,
-        'date': new Date().toISOString(),
-        'replied': replyStatus,
-        'repliedMessageKey': key ? key : null
+        senderUserId: auth.currentUser.uid,
+        recieverUserId: recieverUserId,
+        message: message,
+        date: new Date().toISOString(),
+        replied: replyStatus,
+        repliedMessageKey: key ? key : null,
+        timestamp: serverTimestamp()
     })
     // const { chatData } = setDoc(doc(db, "chats", auth.currentUser.uid, recieverUserId), {
     //     userID: auth.currentUser.uid,
     //     message: message
     // });
 }
+
 export const setTyping = async (recieverUserId, status) => {
     return await set(ref(database, 'typing/' + recieverUserId + '/ '+ auth.currentUser.uid), {
         'typerID': auth.currentUser.uid,
@@ -337,9 +372,6 @@ export const setBOTMessageLTS = async (recieverUID, message) => {
 
 }
 
-export const listenMessage = (snapshotFunc) => {
-    onValue(chatsDatabaseRef, snapshotFunc);
-};
 
 export const snapshotToArray = (snapshot) => {
     const result = [];
