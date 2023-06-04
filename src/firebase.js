@@ -11,6 +11,7 @@ import {arrayUnion, collection, doc, getDoc, getDocs, getFirestore, query, setDo
 import {getDatabase, onValue, push, ref, set} from "firebase/database";
 import { getStorage, uploadBytesResumable, getDownloadURL,getMetadata, listAll } from "firebase/storage";
 import { ref as sRef } from 'firebase/storage';
+import ImageResizer from 'react-image-file-resizer';
 import useFileProgress from "./stores/useFileProgress";
 
 
@@ -39,42 +40,29 @@ const metadata = {
 };
 
 
-export const listImages = async (recieverID) => {
-    const currentUserID = auth.currentUser.uid
-    const listRef = sRef(storage, `files/${currentUserID}`);
-    const imgList = [];
-    const obj = {
-        image: "https://firebasestorage.googleapis.com/v0/b/chat-b8b69.appspot.com/o/files%2FK1ryhFed9RQf6qnrZTQXcbxYwbw2%2F2023-06-03T17%3A50%3A53.067Z?alt=media&token=38817043-9c23-41f1-aea3-802302f66ebe",
-        placeholderImg: "https://firebasestorage.googleapis.com/v0/b/chat-b8b69.appspot.com/o/files%2FK1ryhFed9RQf6qnrZTQXcbxYwbw2%2F2023-06-03T17%3A50%3A53.067Z?alt=media&token=38817043-9c23-41f1-aea3-802302f66ebe",
-        width: 300,
-        height: 500
-    }
-
-    try {
-        const res = await listAll(listRef);
-        const promises = res.items.map(async (itemRef) => {
-            const metadata = await getMetadata(itemRef);
-            if (metadata.customMetadata.sender === recieverID || metadata.customMetadata.reciever === recieverID) {
-                const dURL = await getDownloadURL(itemRef);
-                imgList.push(dURL);
-            }
-        });
-
-        await Promise.all(promises);
-        return imgList;
-
-    } catch (error) {
-        console.log('error', error);
-    }
-}
-
 export const sendFiles = async (fileInput,recieverID,onProgress) => {
     const currentUserID = auth.currentUser.uid
     if (!fileInput.files[0]) {
         return;
     }
     const file = fileInput.files[0];
-    console.log('file', file)
+    const resizedFile = await new Promise((resolve) => {
+        ImageResizer.imageFileResizer(
+            file,
+            800, // Max genişlik
+            1000, // Max yükseklik
+            'JPEG', // Çıktı formatı
+            80, // Kalite (0-100)
+            0, // Döndürme derecesi
+            (uri) => {
+                // Küçültülen fotoğrafın veri URL'sini kullanabilirsiniz.
+                resolve(dataURLtoFile(uri, file.name));
+            },
+            'base64' // Veri URL formatı
+        );
+    });
+
+    console.log('resizedFile', resizedFile);
     const fileName = new Date().toISOString()
     const metadata = {
         customMetadata: {
@@ -83,9 +71,9 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
         }
     };
     const storageRef = sRef(storage, `files/${currentUserID}/` + fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+    const uploadTask = uploadBytesResumable(storageRef, resizedFile, metadata);
     const recieverStorageRef = sRef(storage, `files/${recieverID}/` + fileName);
-    const recieverUploadTask = uploadBytesResumable(recieverStorageRef, file, metadata);
+    const recieverUploadTask = uploadBytesResumable(recieverStorageRef, resizedFile, metadata);
     return new Promise((resolve, reject) => {
          uploadTask.on('state_changed',
             (snapshot) => {
@@ -127,21 +115,21 @@ export const sendFiles = async (fileInput,recieverID,onProgress) => {
             }
 
         );
-        setTimeout(() => {
-            getMetadata(storageRef).then(function(metadata) {
-                console.log('Dosya adı: ' + metadata.name);
-                console.log('Dosya boyutu: ' + metadata.size + ' bytes');
-                console.log('Dosya tipi: ' + metadata.contentType);
-                console.log('Oluşturma zamanı: ' + metadata.timeCreated);
-                console.log('Son değiştirme zamanı: ' + metadata.updated);
-                console.log('TESTTTTTTTTTTTT: ' + metadata.customMetadata.sender);
-                console.log('FHGFH************ıhjık***************: ', metadata);
-                console.log('FHGFH************ıhjık***************: ' + metadata.downloadTokens);
-
-            }).catch(function(error) {
-                console.log('Dosya detaylarını alırken bir hata oluştu: ' + error.message);
-            });
-        },6000)
+        // setTimeout(() => {
+        //     getMetadata(storageRef).then(function(metadata) {
+        //         console.log('Dosya adı: ' + metadata.name);
+        //         console.log('Dosya boyutu: ' + metadata.size + ' bytes');
+        //         console.log('Dosya tipi: ' + metadata.contentType);
+        //         console.log('Oluşturma zamanı: ' + metadata.timeCreated);
+        //         console.log('Son değiştirme zamanı: ' + metadata.updated);
+        //         console.log('TESTTTTTTTTTTTT: ' + metadata.customMetadata.sender);
+        //         console.log('FHGFH************ıhjık***************: ', metadata);
+        //         console.log('FHGFH************ıhjık***************: ' + metadata.downloadTokens);
+        //
+        //     }).catch(function(error) {
+        //         console.log('Dosya detaylarını alırken bir hata oluştu: ' + error.message);
+        //     });
+        // },6000)
     })
 
 
@@ -372,5 +360,45 @@ export const firestoreToArray = (snapshot) => {
     });
     return result;
 }
+
+const dataURLtoFile = (dataURL, fileName) => {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], fileName, { type: mime });
+};
+// export const listImages = async (recieverID) => {
+//     const currentUserID = auth.currentUser.uid
+//     const listRef = sRef(storage, `files/${currentUserID}`);
+//     const imgList = [];
+//     const obj = {
+//         image: "https://firebasestorage.googleapis.com/v0/b/chat-b8b69.appspot.com/o/files%2FK1ryhFed9RQf6qnrZTQXcbxYwbw2%2F2023-06-03T17%3A50%3A53.067Z?alt=media&token=38817043-9c23-41f1-aea3-802302f66ebe",
+//         placeholderImg: "https://firebasestorage.googleapis.com/v0/b/chat-b8b69.appspot.com/o/files%2FK1ryhFed9RQf6qnrZTQXcbxYwbw2%2F2023-06-03T17%3A50%3A53.067Z?alt=media&token=38817043-9c23-41f1-aea3-802302f66ebe",
+//         width: 300,
+//         height: 500
+//     }
+//
+//     try {
+//         const res = await listAll(listRef);
+//         const promises = res.items.map(async (itemRef) => {
+//             const metadata = await getMetadata(itemRef);
+//             if (metadata.customMetadata.sender === recieverID || metadata.customMetadata.reciever === recieverID) {
+//                 const dURL = await getDownloadURL(itemRef);
+//                 imgList.push(dURL);
+//             }
+//         });
+//
+//         await Promise.all(promises);
+//         return imgList;
+//
+//     } catch (error) {
+//         console.log('error', error);
+//     }
+// }
 
 export default app
