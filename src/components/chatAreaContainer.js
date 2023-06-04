@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import ProgressBar from "./progressBar";
-import {getAuth} from "firebase/auth";
 import Messages from "./messages";
 import RepliedMessageContainer from "./repliedMessageContainer";
 import useToggleReplyMode from "../stores/useToggleReplyMode";
@@ -127,7 +126,7 @@ function ChatAreaContainer({selectedUser, chat, currentUserData, currentMessage,
                                 { (index === 0) && checkDate(messageObj, new Date()) }
                                 { (index !== 0) && checkDate(messageObj, chat[index - 1]) }
                                 {
-                                    (messageObj.senderUserId === getAuth().currentUser.uid)
+                                    (messageObj.senderUserId === currentUserData.userID)
                                         ? <Messages message ={messageObj.message} date={messageObj.date} sender='me' repliedStatus={messageObj.replied} repliedMessageKey={messageObj.repliedMessageKey} currentMessageKey={messageObj.key} />
                                         : <Messages message ={messageObj.message} date={messageObj.date} sender='friend' repliedStatus={messageObj.replied} repliedMessageKey={messageObj.repliedMessageKey} currentMessageKey={messageObj.key}/>
                                 }

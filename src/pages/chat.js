@@ -76,10 +76,12 @@ function Chat(props) {
 
     useEffect(() => {
         getAllUserData().then((response) => {
-            setAllUserData(response.filter(x => x.userID !== getAuth().currentUser.uid));
-            setConnections(response.find(x => x.userID === getAuth().currentUser.uid).connections);
-            setCurrentUserData(response.find(x => x.userID === getAuth().currentUser.uid));
-            const latestConnID = response.find(x => x.userID === getAuth().currentUser.uid).latestConnection;
+            const currentUser = response.find(x => x.userID === getAuth().currentUser.uid);
+            setCurrentUserData(currentUser);
+            setAllUserData(response.filter(x => x !== currentUser));
+            setConnections(currentUser.connections);
+
+            // const latestConnID = response.find(x => x.userID === getAuth().currentUser.uid).latestConnection;
             // (latestConnID) && getUserData(latestConnID).then((response) => setSelectedUser(response)) // !== null
 
         });
@@ -92,8 +94,8 @@ function Chat(props) {
             if (result) {
                 if (selectedUser && selectedUser.userID) {
                     result = result.filter(x =>
-                        (x.senderUserId === getAuth().currentUser.uid && x.recieverUserId === selectedUser.userID) ||
-                        (x.recieverUserId === getAuth().currentUser.uid && x.senderUserId === selectedUser.userID)
+                        (x.senderUserId === currentUserData.userID && x.recieverUserId === selectedUser.userID) ||
+                        (x.recieverUserId === currentUserData.userID && x.senderUserId === selectedUser.userID)
                     )
                     console.log('ALL', result)
                     setChat(result);
@@ -141,14 +143,14 @@ function Chat(props) {
         if (currentMessage.length > 0 && selectedUser !== null) {
             //////////////////////////mesaj atıldığında bağlantı oluştur CROSS
             if (!connections_.includes(selectedUser.userID)) {
-                updateUserConnections(getAuth().currentUser.uid, selectedUser.userID).then(()  => {
-                    getUserData(getAuth().currentUser.uid).then((res) => {
+                updateUserConnections(currentUserData.userID, selectedUser.userID).then(()  => {
+                    getUserData(currentUserData.userID).then((res) => {
                         setConnections(res.connections);
                     })
                 })
             }
-            if (!selectedUser.connections.includes(getAuth().currentUser.uid)) {
-                await updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
+            if (!selectedUser.connections.includes(currentUserData.userID)) {
+                await updateUserConnections(selectedUser.userID, currentUserData.userID)
             }
             await setLatestMessages(selectedUser.userID,currentMessage)
              updateLatestConnection(selectedUser.userID)
@@ -235,14 +237,14 @@ function Chat(props) {
         }
 
         if (!connections_.includes(selectedUser.userID)) {
-            updateUserConnections(getAuth().currentUser.uid, selectedUser.userID).then(()  => {
-                getUserData(getAuth().currentUser.uid).then((res) => {
+            updateUserConnections(currentUserData.userID, selectedUser.userID).then(()  => {
+                getUserData(currentUserData.userID).then((res) => {
                     setConnections(res.connections);
                 })
             })
         }
-        if (!selectedUser.connections.includes(getAuth().currentUser.uid)) {
-            await updateUserConnections(selectedUser.userID, getAuth().currentUser.uid)
+        if (!selectedUser.connections.includes(currentUserData.userID)) {
+            await updateUserConnections(selectedUser.userID, currentUserData.userID)
         }
         await setLatestMessages(selectedUser.userID, '☇ dosya')
         updateLatestConnection(selectedUser.userID)
@@ -291,7 +293,7 @@ function Chat(props) {
                                <div className={'header-connections'}>
                                    <div className={'user-info'} onClick={currUserInfoToggle}>
                                        <div className={'user-photo'}><img src={currentUserData.avatarLink} alt="avatar"/></div>
-                                       <div className={'user-display-name'}>{getAuth().currentUser?.displayName}</div>
+                                       <div className={'user-display-name'}>{currentUserData?.displayName}</div>
                                    </div>
                                    <div className={'chat-logo'}></div>
                                </div>

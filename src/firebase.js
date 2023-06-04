@@ -258,7 +258,7 @@ export const updateLatestConnection = async  (recieverID) => {
     });
 }
 export const updateDisplayName = async (displayName) => {
-    await updateProfile(getAuth().currentUser, {
+    await updateProfile(auth.currentUser, {
         displayName: displayName
     })
     const userRef = doc(db, "users", auth.currentUser.uid);
